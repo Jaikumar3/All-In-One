@@ -27,12 +27,19 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="#wordlists">Wordlists</a></li>
                     <li class="nav-item"><a class="nav-link" href="#xss">XSS Payloads</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#html-payloads">HTML Payloads</a></li>
                     <li class="nav-item"><a class="nav-link" href="#lfi">LFI Payloads</a></li>
                     <li class="nav-item"><a class="nav-link" href="#cmd-injection">Command Injection</a></li>
                     <li class="nav-item"><a class="nav-link" href="#sql-injection">SQL Injection</a></li>
                     <li class="nav-item"><a class="nav-link" href="#regex">Regex Patterns</a></li>
                     <li class="nav-item"><a class="nav-link" href="#resources">External Resources</a></li>
                 </ul>
+                <div class="input-group" style="max-width: 300px;">
+                    <input type="text" id="search-input" class="form-control" placeholder="Search payloads...">
+                    <button class="btn btn-light" id="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
                 <div class="theme-toggle ms-2" id="theme-toggle">
                     <i class="fas fa-moon text-white"></i>
                 </div>
@@ -42,40 +49,7 @@
 
     <main class="container-fluid py-4">
         <div class="row">
-            <div class="col-lg-3 col-md-4">
-                <div class="sticky-sidebar">
-                    <div class="card mb-4">
-                        <div class="card-header bg-dark text-white">
-                            <h3>Categories</h3>
-                        </div>
-                        <div class="list-group list-group-flush">
-                            <a href="#wordlists" class="list-group-item list-group-item-action">Wordlists</a>
-                            <a href="#xss" class="list-group-item list-group-item-action">XSS Payloads</a>
-                            <a href="#lfi" class="list-group-item list-group-item-action">LFI Payloads</a>
-                            <a href="#cmd-injection" class="list-group-item list-group-item-action">Command Injection</a>
-                            <a href="#sql-injection" class="list-group-item list-group-item-action">SQL Injection</a>
-                            <a href="#regex" class="list-group-item list-group-item-action">Regex Patterns</a>
-                            <a href="#resources" class="list-group-item list-group-item-action">External Resources</a>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header bg-dark text-white">
-                            <h3>Search</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="input-group">
-                                <input type="text" id="search-input" class="form-control" placeholder="Search payloads...">
-                                <button class="btn btn-primary" id="search-button">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-9 col-md-8">
+            <div class="col-12">
                 <section id="wordlists" class="mb-5">
                     <div class="card">
                         <div class="card-header bg-dark text-white">
@@ -146,6 +120,13 @@
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="css-tab" data-bs-toggle="tab" data-bs-target="#css" type="button" role="tab" aria-controls="css" aria-selected="false">CSS-Based</button>
+                                </li>
+                                <!-- New tab items for HTML-specific and Angular payloads -->
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="html-specific-tab" data-bs-toggle="tab" data-bs-target="#html-specific" type="button" role="tab" aria-controls="html-specific" aria-selected="false">HTML-Specific</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="angular-tab" data-bs-toggle="tab" data-bs-target="#angular" type="button" role="tab" aria-controls="angular" aria-selected="false">Angular</button>
                                 </li>
                             </ul>
                             
@@ -343,6 +324,63 @@
                                         </table>
                                     </div>
                                 </div>
+                                <div class="tab-pane fade" id="html-specific" role="tabpanel" aria-labelledby="html-specific-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-html-specific-table">
+                                                <!-- HTML-specific XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="angular" role="tabpanel" aria-labelledby="angular-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-angular-table">
+                                                <!-- Angular XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="html-payloads" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h2>HTML Payloads</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>HTML payloads and snippets for testing web applications (separate from XSS).</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Payload</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="html-payloads-table">
+                                        <!-- HTML payloads will be loaded here by JavaScript -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
