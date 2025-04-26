@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Payload Repository</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="bg-dark text-white py-3">
+        <div class="container">
+            <h1 class="text-center">Security Payload Repository</h1>
+            <p class="text-center">All-in-one security testing resources</p>
+        </div>
+    </header>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="#wordlists">Wordlists</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#xss">XSS Payloads</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#lfi">LFI Payloads</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#cmd-injection">Command Injection</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#sql-injection">SQL Injection</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#regex">Regex Patterns</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#resources">External Resources</a></li>
+                </ul>
+                <div class="theme-toggle ms-2" id="theme-toggle">
+                    <i class="fas fa-moon text-white"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid py-4">
+        <div class="row">
+            <div class="col-lg-3 col-md-4">
+                <div class="sticky-sidebar">
+                    <div class="card mb-4">
+                        <div class="card-header bg-dark text-white">
+                            <h3>Categories</h3>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a href="#wordlists" class="list-group-item list-group-item-action">Wordlists</a>
+                            <a href="#xss" class="list-group-item list-group-item-action">XSS Payloads</a>
+                            <a href="#lfi" class="list-group-item list-group-item-action">LFI Payloads</a>
+                            <a href="#cmd-injection" class="list-group-item list-group-item-action">Command Injection</a>
+                            <a href="#sql-injection" class="list-group-item list-group-item-action">SQL Injection</a>
+                            <a href="#regex" class="list-group-item list-group-item-action">Regex Patterns</a>
+                            <a href="#resources" class="list-group-item list-group-item-action">External Resources</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h3>Search</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group">
+                                <input type="text" id="search-input" class="form-control" placeholder="Search payloads...">
+                                <button class="btn btn-primary" id="search-button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-9 col-md-8">
+                <section id="wordlists" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h2>Wordlists</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Common wordlists used for brute forcing, discovery, and password attacks.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Link</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="wordlists-table">
+                                        <!-- Wordlists will be loaded here by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="xss" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h2>XSS Payloads</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Cross-Site Scripting (XSS) payload collection for testing web applications, based on <a href="https://portswigger.net/web-security/cross-site-scripting/cheat-sheet" target="_blank" class="text-primary">PortSwigger's XSS Cheat Sheet</a>.</p>
+                            
+                            <!-- XSS Categories Tabs -->
+                            <ul class="nav nav-tabs mb-3" id="xssTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab" aria-controls="basic" aria-selected="true">Basic</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="tags-tab" data-bs-toggle="tab" data-bs-target="#tags" type="button" role="tab" aria-controls="tags" aria-selected="false">HTML Tags</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="attributes-tab" data-bs-toggle="tab" data-bs-target="#attributes" type="button" role="tab" aria-controls="attributes" aria-selected="false">Attributes</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="encoded-tab" data-bs-toggle="tab" data-bs-target="#encoded" type="button" role="tab" aria-controls="encoded" aria-selected="false">HTML Encoded</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="dom-tab" data-bs-toggle="tab" data-bs-target="#dom" type="button" role="tab" aria-controls="dom" aria-selected="false">DOM-based</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="evasion-tab" data-bs-toggle="tab" data-bs-target="#evasion" type="button" role="tab" aria-controls="evasion" aria-selected="false">Filter Evasion</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="events-tab" data-bs-toggle="tab" data-bs-target="#events" type="button" role="tab" aria-controls="events" aria-selected="false">Event Handlers</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="waf-tab" data-bs-toggle="tab" data-bs-target="#waf" type="button" role="tab" aria-controls="waf" aria-selected="false">WAF Bypass</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="polyglots-tab" data-bs-toggle="tab" data-bs-target="#polyglots" type="button" role="tab" aria-controls="polyglots" aria-selected="false">Polyglots</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="context-tab" data-bs-toggle="tab" data-bs-target="#context" type="button" role="tab" aria-controls="context" aria-selected="false">Context-Specific</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="browser-tab" data-bs-toggle="tab" data-bs-target="#browser" type="button" role="tab" aria-controls="browser" aria-selected="false">Browser-Specific</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="css-tab" data-bs-toggle="tab" data-bs-target="#css" type="button" role="tab" aria-controls="css" aria-selected="false">CSS-Based</button>
+                                </li>
+                            </ul>
+                            
+                            <!-- XSS Tab Content -->
+                            <div class="tab-content" id="xssTabContent">
+                                <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-basic-table">
+                                                <!-- Basic XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-tags-table">
+                                                <!-- Tags bypass XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-attributes-table">
+                                                <!-- Attributes bypass XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="encoded" role="tabpanel" aria-labelledby="encoded-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-encoded-table">
+                                                <!-- HTML encoded XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="dom" role="tabpanel" aria-labelledby="dom-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-dom-table">
+                                                <!-- DOM-based XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="evasion" role="tabpanel" aria-labelledby="evasion-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-evasion-table">
+                                                <!-- Filter evasion XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="events" role="tabpanel" aria-labelledby="events-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-events-table">
+                                                <!-- Event handlers XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="waf" role="tabpanel" aria-labelledby="waf-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-waf-table">
+                                                <!-- WAF bypass XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="polyglots" role="tabpanel" aria-labelledby="polyglots-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-polyglots-table">
+                                                <!-- Polyglots XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="context" role="tabpanel" aria-labelledby="context-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-context-table">
+                                                <!-- Context-specific XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="browser" role="tabpanel" aria-labelledby="browser-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-browser-table">
+                                                <!-- Browser-specific XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="css" role="tabpanel" aria-labelledby="css-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payload</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="xss-css-table">
+                                                <!-- CSS-based XSS payloads will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="lfi" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h2>LFI Payloads</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Local File Inclusion (LFI) payload collection for testing server vulnerabilities.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Payload</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lfi-table">
+                                        <!-- LFI payloads will be loaded here by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="cmd-injection" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h2>Command Injection Payloads</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Command injection payloads for testing server-side command execution vulnerabilities.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Payload</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cmd-table">
+                                        <!-- Command injection payloads will be loaded here by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="sql-injection" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h2>SQL Injection Payloads</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>SQL injection payloads for testing database vulnerabilities.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Payload</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sql-table">
+                                        <!-- SQL injection payloads will be loaded here by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="regex" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h2>Regex Patterns</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Useful regular expression patterns for security testing and data validation.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Pattern</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="regex-table">
+                                        <!-- Regex patterns will be loaded here by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="resources" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h2>External Resources</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Links to external resources, repositories, and tools for security testing.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Link</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="resources-table">
+                                        <!-- External resources will be loaded here by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <p>&copy; 2025 Security Payload Repository. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

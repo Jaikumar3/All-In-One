@@ -1,0 +1,332 @@
+/* Custom styles for Security Payload Repository */
+
+/* Dark mode styles */
+:root {
+    --body-bg: #f5f5f5;
+    --card-bg: #fff;
+    --text-color: #212529;
+    --table-header-bg: #f8f9fa;
+    --table-hover-bg: rgba(13, 110, 253, 0.05);
+    --code-bg: #f8f9fa;
+    --code-color: #212529;
+}
+
+[data-bs-theme="dark"] {
+    --body-bg: #212529;
+    --card-bg: #2c3034;
+    --text-color: #f8f9fa;
+    --table-header-bg: #343a40;
+    --table-hover-bg: rgba(255, 255, 255, 0.05);
+    --code-bg: #343a40;
+    --code-color: #f8f9fa;
+}
+
+/* Full screen layout */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Smooth scrolling for anchor links */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Body styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--body-bg);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Make main content fill available space */
+main {
+    flex: 1 0 auto;
+}
+
+/* Fixed navbar */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Header hover effect */
+.navbar-nav .nav-link {
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover:after {
+    width: 100%;
+}
+
+/* Card styles */
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+    font-weight: bold;
+    padding: 12px 20px;
+}
+
+.card-body {
+    flex: 1 0 auto;
+    overflow: visible;
+}
+
+/* Button styles */
+.btn {
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+}
+
+.btn-copy {
+    padding: 2px 8px;
+    font-size: 0.8rem;
+}
+
+/* Table styles */
+.table-responsive {
+    overflow-y: visible;
+    overflow-x: auto;
+}
+
+.table {
+    margin-bottom: 0;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table th {
+    background-color: var(--table-header-bg);
+    font-weight: 600;
+}
+
+.table tr:hover {
+    background-color: var(--table-hover-bg);
+}
+
+.table td {
+    vertical-align: middle;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Column widths */
+.table th:nth-child(1), .table td:nth-child(1) {
+    width: 40%;
+}
+
+.table th:nth-child(2), .table td:nth-child(2) {
+    width: 45%;
+}
+
+.table th:nth-child(3), .table td:nth-child(3) {
+    width: 15%;
+}
+
+/* Payload display */
+.payload-text {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: var(--code-bg);
+    color: var(--code-color);
+    padding: 8px;
+    border-radius: 4px;
+    display: block;
+    word-break: break-all;
+    white-space: pre-wrap;
+    max-height: none;
+    overflow: visible;
+}
+
+/* Code block for regex patterns */
+pre.code-block {
+    background-color: #272822;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Success copy notification */
+.copy-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1020;
+    display: none;
+}
+
+/* Improved tab navigation */
+.nav-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    padding-bottom: 5px;
+}
+
+.nav-tabs::-webkit-scrollbar {
+    height: 5px;
+}
+
+.nav-tabs::-webkit-scrollbar-thumb {
+    background-color: #adb5bd;
+    border-radius: 10px;
+}
+
+.nav-tabs .nav-link {
+    white-space: nowrap;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .payload-text {
+        min-width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
+        max-width: 100%;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    h3 {
+        font-size: 1.2rem;
+    }
+    
+    .table-responsive {
+        margin-left: -10px;
+        margin-right: -10px;
+        width: calc(100% + 20px);
+    }
+}
+
+/* Animation for copy notification */
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.fade-in-out {
+    animation: fadeInOut 2s ease-in-out;
+}
+
+/* External link styling */
+a.external-link {
+    color: #0d6efd;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+a.external-link:hover {
+    text-decoration: underline;
+}
+
+a.external-link i {
+    margin-left: 5px;
+    font-size: 0.8em;
+}
+
+/* Search results highlight */
+.highlight {
+    background-color: yellow;
+    padding: 2px;
+    border-radius: 2px;
+}
+
+/* Search no results message */
+.no-results {
+    padding: 20px;
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Loading spinner */
+.spinner-border {
+    display: none;
+    margin: 0 auto;
+}
+
+/* Sticky sidebar for better navigation */
+@media (min-width: 992px) {
+    .sticky-sidebar {
+        position: sticky;
+        top: 80px;
+        height: calc(100vh - 100px);
+        overflow-y: auto;
+    }
+}
+
+/* Dark mode toggle */
+.theme-toggle {
+    display: inline-block;
+    padding: 5px;
+    cursor: pointer;
+}
