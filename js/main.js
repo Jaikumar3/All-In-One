@@ -27,6 +27,12 @@ function initializePage() {
     populateTable('xss-context-table', xssData.contextSpecific, createBrowserSpecificRow);
     populateTable('xss-browser-table', xssData.browserSpecific, createBrowserSpecificRow);
     populateTable('xss-css-table', xssData.cssBased, createBrowserSpecificRow);
+    // Add HTML-specific and Angular payloads tables
+    populateTable('xss-html-specific-table', xssData.htmlSpecific, createPayloadRow);
+    populateTable('xss-angular-table', xssData.angularPayloads, createPayloadRow);
+    
+    // Populate separate HTML payloads table (not part of XSS)
+    populateTable('html-payloads-table', htmlPayloadsData, createPayloadRow);
     
     populateTable('lfi-table', lfiData, createPayloadRow);
     populateTable('cmd-table', cmdInjectionData, createPayloadRow);
@@ -492,6 +498,23 @@ function performSearch(query) {
         (item.browser && item.browser.toLowerCase().includes(query))
     );
     
+    // Add search for HTML-specific and Angular payloads
+    const matchingXssHtmlSpecific = xssData.htmlSpecific.filter(item => 
+        item.payload.toLowerCase().includes(query) || 
+        item.description.toLowerCase().includes(query)
+    );
+    
+    const matchingXssAngular = xssData.angularPayloads.filter(item => 
+        item.payload.toLowerCase().includes(query) || 
+        item.description.toLowerCase().includes(query)
+    );
+    
+    // Search in HTML payloads (separate from XSS)
+    const matchingHtmlPayloads = htmlPayloadsData.filter(item => 
+        item.payload.toLowerCase().includes(query) || 
+        item.description.toLowerCase().includes(query)
+    );
+    
     const matchingLfi = lfiData.filter(item => 
         item.payload.toLowerCase().includes(query) || 
         item.description.toLowerCase().includes(query)
@@ -533,6 +556,11 @@ function performSearch(query) {
     populateTable('xss-context-table', matchingXssContext, createBrowserSpecificRow);
     populateTable('xss-browser-table', matchingXssBrowser, createBrowserSpecificRow);
     populateTable('xss-css-table', matchingXssCss, createBrowserSpecificRow);
+    populateTable('xss-html-specific-table', matchingXssHtmlSpecific, createPayloadRow);
+    populateTable('xss-angular-table', matchingXssAngular, createPayloadRow);
+    
+    // Update HTML payloads table (separate from XSS)
+    populateTable('html-payloads-table', matchingHtmlPayloads, createPayloadRow);
     
     populateTable('lfi-table', matchingLfi, createPayloadRow);
     populateTable('cmd-table', matchingCmd, createPayloadRow);
@@ -548,6 +576,8 @@ function performSearch(query) {
                          matchingXssEvents.length + matchingXssWaf.length +
                          matchingXssPolyglots.length + matchingXssContext.length +
                          matchingXssBrowser.length + matchingXssCss.length +
+                         matchingXssHtmlSpecific.length + matchingXssAngular.length +
+                         matchingHtmlPayloads.length +
                          matchingLfi.length + matchingCmd.length + 
                          matchingSql.length + matchingRegex.length + 
                          matchingResources.length;
@@ -561,7 +591,8 @@ function performSearch(query) {
                                  matchingXssDom.length > 0 || matchingXssEvasion.length > 0 ||
                                  matchingXssEvents.length > 0 || matchingXssWaf.length > 0 ||
                                  matchingXssPolyglots.length > 0 || matchingXssContext.length > 0 ||
-                                 matchingXssBrowser.length > 0 || matchingXssCss.length > 0;
+                                 matchingXssBrowser.length > 0 || matchingXssCss.length > 0 ||
+                                 matchingXssHtmlSpecific.length > 0 || matchingXssAngular.length > 0;
                                  
         if (xssTabHasResults) {
             // Activate the first tab that has results
@@ -577,7 +608,9 @@ function performSearch(query) {
                 { id: 'polyglots-tab', results: matchingXssPolyglots },
                 { id: 'context-tab', results: matchingXssContext },
                 { id: 'browser-tab', results: matchingXssBrowser },
-                { id: 'css-tab', results: matchingXssCss }
+                { id: 'css-tab', results: matchingXssCss },
+                { id: 'html-specific-tab', results: matchingXssHtmlSpecific },
+                { id: 'angular-tab', results: matchingXssAngular }
             ];
             
             for (const tab of tabsToCheck) {
@@ -611,6 +644,11 @@ function resetSearch() {
     populateTable('xss-context-table', xssData.contextSpecific, createBrowserSpecificRow);
     populateTable('xss-browser-table', xssData.browserSpecific, createBrowserSpecificRow);
     populateTable('xss-css-table', xssData.cssBased, createBrowserSpecificRow);
+    populateTable('xss-html-specific-table', xssData.htmlSpecific, createPayloadRow);
+    populateTable('xss-angular-table', xssData.angularPayloads, createPayloadRow);
+    
+    // Repopulate HTML payloads table
+    populateTable('html-payloads-table', htmlPayloadsData, createPayloadRow);
     
     populateTable('lfi-table', lfiData, createPayloadRow);
     populateTable('cmd-table', cmdInjectionData, createPayloadRow);
