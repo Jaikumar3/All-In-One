@@ -1,5 +1,8 @@
 // Main JavaScript for Security Payload Repository
 
+// Application version
+const APP_VERSION = 'v1.0.0';
+
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize the page
@@ -7,7 +10,49 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set up event listeners
     setupEventListeners();
+    
+    // Add mobile-specific event handlers
+    setupMobileInteractions();
+    
+    // Initialize favorite payloads
+    initializeFavorites();
+    
+    // Initialize recent payloads view
+    initializeRecentPayloads();
+    
+    // Initialize tab scrolling system
+    initializeTabScrolling();
+    
+    // Display version information
+    displayVersionInfo();
 });
+
+// Display version information in the footer
+function displayVersionInfo() {
+    const footerText = document.querySelector('footer p');
+    
+    if (footerText) {
+        // Add version info to the footer text
+        footerText.innerHTML += ` | ${APP_VERSION}`;
+    } else {
+        // If no footer paragraph exists, create a version element elsewhere
+        const versionElement = document.createElement('div');
+        versionElement.className = 'version-info text-end small text-muted me-2 mb-2';
+        versionElement.textContent = APP_VERSION;
+        
+        // Add to the bottom of the main container
+        const mainContainer = document.querySelector('main.container-fluid') || document.querySelector('main.container');
+        if (mainContainer) {
+            mainContainer.appendChild(versionElement);
+        }
+    }
+    
+    // Also add version to page title (optional)
+    const pageTitle = document.title;
+    if (pageTitle && !pageTitle.includes(APP_VERSION)) {
+        document.title = `${pageTitle} | ${APP_VERSION}`;
+    }
+}
 
 // Initialize the page with data
 function initializePage() {
@@ -40,8 +85,22 @@ function initializePage() {
     populateTable('regex-table', regexData, createRegexRow);
     populateTable('resources-table', resourcesData, createResourceRow);
     
+    // Populate Windows and Linux Privilege Escalation tables
+    populateTable('windows-privesc-table', windowsPrivescData, createPayloadRow);
+    populateTable('windows-privesc-resources-table', windowsPrivescResourcesData, createResourceRow);
+    populateTable('linux-privesc-table', linuxPrivescData, createPayloadRow);
+    populateTable('linux-privesc-resources-table', linuxPrivescResourcesData, createResourceRow);
+    
     // Create the notification element for copy operations
     createCopyNotification();
+    
+    // Initialize skeleton loading state
+    showSkeletonLoaders();
+    
+    // Simulate loading data (remove in production if data is loaded immediately)
+    setTimeout(() => {
+        hideSkeletonLoaders();
+    }, 800);
 }
 
 // Set up event listeners for the page
@@ -116,6 +175,12 @@ function toggleTheme() {
     } else {
         enableDarkMode();
     }
+    
+    // Add animation effect for theme transition
+    document.body.classList.add('theme-transition');
+    setTimeout(() => {
+        document.body.classList.remove('theme-transition');
+    }, 1000);
 }
 
 // Enable dark mode
@@ -219,15 +284,64 @@ function createPayloadRow(payload) {
     descriptionCell.textContent = payload.description;
     row.appendChild(descriptionCell);
     
-    // Action cell (copy button)
+    // Action cell (copy button and favorite button)
     const actionCell = document.createElement('td');
+    const buttonGroup = document.createElement('div');
+    buttonGroup.className = 'btn-group';
+    
+    // Copy button with enhanced animation
     const copyButton = document.createElement('button');
     copyButton.className = 'btn btn-sm btn-primary btn-copy';
     copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
     copyButton.addEventListener('click', function() {
         copyToClipboard(payload.payload);
+        
+        // Add the copied class for animation
+        this.classList.add('copied');
+        setTimeout(() => {
+            this.classList.remove('copied');
+        }, 1500);
     });
-    actionCell.appendChild(copyButton);
+    
+    // Favorite button
+    const favoriteButton = document.createElement('button');
+    favoriteButton.className = 'btn btn-sm btn-secondary btn-favorite';
+    favoriteButton.innerHTML = '<i class="far fa-star"></i>';
+    favoriteButton.dataset.payload = payload.payload;
+    favoriteButton.dataset.description = payload.description;
+    favoriteButton.title = "Add to favorites";
+    
+    // Check if this payload is already in favorites
+    if (isPayloadFavorited(payload.payload)) {
+        favoriteButton.classList.add('active');
+        favoriteButton.innerHTML = '<i class="fas fa-star"></i>';
+    }
+    
+    favoriteButton.addEventListener('click', function() {
+        toggleFavoritePayload(payload.payload, payload.description);
+        
+        if (this.classList.contains('active')) {
+            this.classList.remove('active');
+            this.innerHTML = '<i class="far fa-star"></i>';
+        } else {
+            this.classList.add('active');
+            this.innerHTML = '<i class="fas fa-star"></i>';
+            
+            // Add animation effect
+            this.animate([
+                { transform: 'scale(1)' },
+                { transform: 'scale(1.3)' },
+                { transform: 'scale(1)' }
+            ], {
+                duration: 300,
+                easing: 'ease-in-out'
+            });
+        }
+    });
+    
+    buttonGroup.appendChild(copyButton);
+    buttonGroup.appendChild(favoriteButton);
+    actionCell.appendChild(buttonGroup);
     row.appendChild(actionCell);
     
     return row;
@@ -339,8 +453,28 @@ function createResourceRow(resource) {
     return row;
 }
 
-// Copy text to clipboard
+// Copy text to clipboard with enhanced feedback
 function copyToClipboard(text) {
+    // Try to use the modern clipboard API first
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                showCopyNotification();
+                trackRecentPayload(text);
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+                fallbackCopyToClipboard(text);
+            });
+    } else {
+        // Fall back to the older method
+        fallbackCopyToClipboard(text);
+        trackRecentPayload(text);
+    }
+}
+
+// Fallback copy method using execCommand
+function fallbackCopyToClipboard(text) {
     // Create a temporary textarea element to copy from
     const textarea = document.createElement('textarea');
     textarea.value = text;
@@ -349,13 +483,30 @@ function copyToClipboard(text) {
     textarea.style.left = '-9999px';
     document.body.appendChild(textarea);
     
-    // Select and copy the text
-    textarea.select();
-    document.execCommand('copy');
+    // For iOS devices
+    if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
+        // Create a range and selection
+        const range = document.createRange();
+        range.selectNodeContents(textarea);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        textarea.setSelectionRange(0, 999999);
+    } else {
+        // Select the text for other devices
+        textarea.select();
+    }
+    
+    // Execute copy command
+    const successful = document.execCommand('copy');
     document.body.removeChild(textarea);
     
     // Show copy notification
-    showCopyNotification();
+    if (successful) {
+        showCopyNotification();
+    } else {
+        showCopyNotification('Copy failed. Please try again.');
+    }
 }
 
 // Create the copy notification element
@@ -370,7 +521,7 @@ function createCopyNotification() {
     document.body.appendChild(notification);
 }
 
-// Show the copy notification
+// Show the copy notification with improved styling
 function showCopyNotification(message = 'Copied to clipboard!') {
     const notification = document.getElementById('copyNotification');
     if (!notification) return;
@@ -378,15 +529,32 @@ function showCopyNotification(message = 'Copied to clipboard!') {
     // Update notification text
     notification.textContent = message;
     
-    // Show the notification
+    // Show the notification with improved animation
     notification.style.display = 'block';
     notification.classList.add('fade-in-out');
     
-    // Hide it after animation completes
+    // Add slide-in animation
+    notification.animate([
+        { transform: 'translateY(-20px)', opacity: 0 },
+        { transform: 'translateY(0)', opacity: 1 }
+    ], {
+        duration: 300,
+        easing: 'ease-out'
+    });
+    
+    // Hide it after animation completes with slide-out
     setTimeout(function() {
-        notification.style.display = 'none';
-        notification.classList.remove('fade-in-out');
-    }, 2000);
+        notification.animate([
+            { transform: 'translateY(0)', opacity: 1 },
+            { transform: 'translateY(-20px)', opacity: 0 }
+        ], {
+            duration: 300,
+            easing: 'ease-in'
+        }).onfinish = () => {
+            notification.style.display = 'none';
+            notification.classList.remove('fade-in-out');
+        };
+    }, 1700);
 }
 
 // Fetch and copy wordlist content
@@ -677,5 +845,701 @@ function showNoResultsMessage() {
                 tableParent.appendChild(noResults);
             }
         }
+    });
+}
+
+// Set up mobile-specific interactions
+function setupMobileInteractions() {
+    // Close navbar when clicking a link (mobile)
+    const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+    const navbarCollapse = document.querySelector('.navbar-collapse');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth < 992) {  // Only on mobile/tablet
+                navbarCollapse.classList.remove('show');
+            }
+        });
+    });
+    
+    // Better touch handling for copy buttons on mobile
+    const copyButtons = document.querySelectorAll('.btn-copy');
+    copyButtons.forEach(button => {
+        button.addEventListener('touchstart', function(e) {
+            // Add a visual feedback on touch
+            this.classList.add('active');
+            // Prevent double-tap zoom on iOS
+            e.preventDefault();
+        });
+        
+        button.addEventListener('touchend', function(e) {
+            // Remove the visual feedback
+            this.classList.remove('active');
+        });
+    });
+    
+    // Adjust notification position based on screen size
+    window.addEventListener('resize', adjustNotificationPosition);
+    adjustNotificationPosition();
+    
+    // Enable horizontal scrolling for tabs on mobile with touch events
+    setupTabsScrolling();
+    
+    // Improve mobile performance by debouncing scroll events
+    setupScrollOptimization();
+    
+    // Setup double-tap prevention for buttons
+    setupDoubleTapPrevention();
+    
+    // Add orientation change handler to fix layout issues
+    window.addEventListener('orientationchange', handleOrientationChange);
+    
+    // Add hover simulation for mobile
+    simulateTouchHover();
+    
+    // Add sticky search for mobile
+    setupMobileStickySearch();
+    
+    // Setup tag filtering
+    setupTagFiltering();
+}
+
+// Handle orientation changes
+function handleOrientationChange() {
+    // Force layout recalculation
+    setTimeout(() => {
+        // Adjust notification position
+        adjustNotificationPosition();
+        
+        // Fix iOS viewport height issue on orientation change
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+        
+        // Scroll to current position to fix rendering issues
+        window.scrollTo(window.scrollX, window.scrollY);
+    }, 300);
+}
+
+// Optimize scrolling performance on mobile
+function setupScrollOptimization() {
+    let scrollTimeout;
+    const body = document.body;
+    
+    window.addEventListener('scroll', function() {
+        if (!body.classList.contains('is-scrolling')) {
+            body.classList.add('is-scrolling');
+        }
+        
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function() {
+            body.classList.remove('is-scrolling');
+        }, 200);
+    }, { passive: true });
+}
+
+// Prevent unwanted double-tap zooming on buttons and interactive elements
+function setupDoubleTapPrevention() {
+    const interactiveElements = document.querySelectorAll('button, .btn, .nav-link, .card-header');
+    
+    interactiveElements.forEach(element => {
+        element.addEventListener('touchend', function(e) {
+            // Prevent default only for touchend events that might trigger zoom
+            if (e.cancelable) {
+                e.preventDefault();
+            }
+        });
+    });
+}
+
+// Adjust notification position based on screen size
+function adjustNotificationPosition() {
+    const notification = document.getElementById('copyNotification');
+    if (!notification) return;
+    
+    // Set viewport-relative positioning for better mobile display
+    if (window.innerWidth < 576) {
+        notification.style.top = '10px';
+        notification.style.right = '10px';
+        notification.style.left = '10px';
+        notification.style.width = 'auto';
+        notification.style.maxWidth = 'calc(100vw - 20px)';
+        notification.style.textAlign = 'center';
+        notification.style.fontSize = '14px';
+        notification.style.padding = '8px';
+    } else {
+        notification.style.top = '20px';
+        notification.style.right = '20px';
+        notification.style.left = 'auto';
+        notification.style.width = 'auto';
+        notification.style.maxWidth = '300px';
+        notification.style.fontSize = '16px';
+        notification.style.padding = '10px 15px';
+    }
+    
+    // Fix for notch displays and safe areas on modern phones
+    if ('CSS' in window && CSS.supports('padding-bottom: env(safe-area-inset-bottom)')) {
+        notification.style.paddingRight = 'calc(15px + env(safe-area-inset-right))';
+    }
+}
+
+// Setup improved touch scrolling for tabs on mobile
+function setupTabsScrolling() {
+    const tabLists = document.querySelectorAll('.nav-tabs');
+    
+    tabLists.forEach(tabList => {
+        // Make tab list scrollable on mobile
+        if (window.innerWidth < 768) {
+            tabList.style.overflowX = 'auto';
+            tabList.style.flexWrap = 'nowrap';
+            tabList.style.scrollBehavior = 'smooth';
+            tabList.style.webkitOverflowScrolling = 'touch';
+        }
+        
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        
+        tabList.addEventListener('touchstart', (e) => {
+            isDown = true;
+            tabList.style.scrollBehavior = 'auto'; // Disable smooth scrolling during touch movement
+            startX = e.touches[0].pageX - tabList.offsetLeft;
+            scrollLeft = tabList.scrollLeft;
+        }, { passive: true });
+        
+        tabList.addEventListener('touchend', () => {
+            isDown = false;
+            tabList.style.scrollBehavior = 'smooth'; // Re-enable smooth scrolling
+        });
+        
+        tabList.addEventListener('touchmove', (e) => {
+            if (!isDown) return;
+            const x = e.touches[0].pageX - tabList.offsetLeft;
+            const walk = (x - startX) * 1.5; // Scroll speed multiplier
+            tabList.scrollLeft = scrollLeft - walk;
+        }, { passive: true });
+    });
+    
+    // Add scroll indicators for tabs on mobile
+    addTabScrollIndicators();
+}
+
+// Add visual indicators that tabs are scrollable on mobile
+function addTabScrollIndicators() {
+    const tabContainers = document.querySelectorAll('.nav-tabs-container, .tab-container');
+    
+    tabContainers.forEach(container => {
+        // Remove any existing indicators
+        const existingIndicators = container.querySelectorAll('.tab-scroll-indicator');
+        existingIndicators.forEach(el => el.remove());
+        
+        if (window.innerWidth < 768) {
+            const tabList = container.querySelector('.nav-tabs');
+            if (!tabList) return;
+            
+            // Only add indicators if content is scrollable
+            if (tabList.scrollWidth > tabList.clientWidth) {
+                // Add left and right indicators
+                const leftIndicator = document.createElement('div');
+                leftIndicator.className = 'tab-scroll-indicator tab-scroll-left';
+                leftIndicator.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                
+                const rightIndicator = document.createElement('div');
+                rightIndicator.className = 'tab-scroll-indicator tab-scroll-right';
+                rightIndicator.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                
+                container.appendChild(leftIndicator);
+                container.appendChild(rightIndicator);
+                
+                // Show/hide indicators based on scroll position
+                updateScrollIndicators(tabList, leftIndicator, rightIndicator);
+                
+                tabList.addEventListener('scroll', () => {
+                    updateScrollIndicators(tabList, leftIndicator, rightIndicator);
+                });
+                
+                // Add click handlers to scroll tabs
+                leftIndicator.addEventListener('click', () => {
+                    tabList.scrollBy({ left: -100, behavior: 'smooth' });
+                });
+                
+                rightIndicator.addEventListener('click', () => {
+                    tabList.scrollBy({ left: 100, behavior: 'smooth' });
+                });
+            }
+        }
+    });
+}
+
+// Update scroll indicators visibility based on scroll position
+function updateScrollIndicators(tabList, leftIndicator, rightIndicator) {
+    if (tabList.scrollLeft <= 10) {
+        leftIndicator.style.opacity = '0';
+    } else {
+        leftIndicator.style.opacity = '1';
+    }
+    
+    if (tabList.scrollLeft + tabList.clientWidth >= tabList.scrollWidth - 10) {
+        rightIndicator.style.opacity = '0';
+    } else {
+        rightIndicator.style.opacity = '1';
+    }
+}
+
+// Fix iOS 100vh issue for full-height elements
+function setupViewportHeightFix() {
+    // Set the value of --vh to 1% of the viewport height
+    const setVh = () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    
+    // Set initial value
+    setVh();
+    
+    // Update on resize and orientation change
+    window.addEventListener('resize', setVh);
+    window.addEventListener('orientationchange', setVh);
+}
+
+// Initialize favorites system
+function initializeFavorites() {
+    // Create favorites container if it doesn't exist
+    if (!document.getElementById('favorites-container')) {
+        const mainContainer = document.querySelector('.container-fluid') || document.querySelector('.container');
+        if (!mainContainer) return;
+        
+        const favoritesSection = document.createElement('div');
+        favoritesSection.id = 'favorites-container';
+        favoritesSection.className = 'row mb-4 d-none';
+        
+        const favoritesTitleRow = document.createElement('div');
+        favoritesTitleRow.className = 'col-12';
+        favoritesTitleRow.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <h3><i class="fas fa-star text-warning"></i> Favorite Payloads</h3>
+                <button id="clear-favorites" class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-trash-alt"></i> Clear All
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Payload</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="favorites-table"></tbody>
+                </table>
+            </div>
+        `;
+        
+        favoritesSection.appendChild(favoritesTitleRow);
+        
+        // Insert after search but before main content
+        const searchRow = document.querySelector('.row:has(#search-input)');
+        if (searchRow) {
+            mainContainer.insertBefore(favoritesSection, searchRow.nextSibling);
+        } else {
+            mainContainer.insertBefore(favoritesSection, mainContainer.firstChild);
+        }
+        
+        // Add event listener for clear favorites button
+        document.getElementById('clear-favorites').addEventListener('click', clearAllFavorites);
+    }
+    
+    // Load and display favorites
+    loadFavorites();
+}
+
+// Check if a payload is in favorites
+function isPayloadFavorited(payload) {
+    const favorites = JSON.parse(localStorage.getItem('favoritePayloads') || '[]');
+    return favorites.some(item => item.payload === payload);
+}
+
+// Toggle a payload in favorites
+function toggleFavoritePayload(payload, description) {
+    let favorites = JSON.parse(localStorage.getItem('favoritePayloads') || '[]');
+    
+    const existingIndex = favorites.findIndex(item => item.payload === payload);
+    
+    if (existingIndex >= 0) {
+        // Remove from favorites
+        favorites.splice(existingIndex, 1);
+    } else {
+        // Add to favorites
+        favorites.push({
+            payload: payload,
+            description: description,
+            dateAdded: new Date().toISOString()
+        });
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('favoritePayloads', JSON.stringify(favorites));
+    
+    // Update the favorites display
+    loadFavorites();
+}
+
+// Load favorites from localStorage and display them
+function loadFavorites() {
+    const favoritesTable = document.getElementById('favorites-table');
+    const favoritesContainer = document.getElementById('favorites-container');
+    
+    if (!favoritesTable || !favoritesContainer) return;
+    
+    const favorites = JSON.parse(localStorage.getItem('favoritePayloads') || '[]');
+    
+    // Show or hide favorites section based on content
+    if (favorites.length === 0) {
+        favoritesContainer.classList.add('d-none');
+        return;
+    } else {
+        favoritesContainer.classList.remove('d-none');
+    }
+    
+    // Clear existing table
+    favoritesTable.innerHTML = '';
+    
+    // Add each favorite
+    favorites.forEach(favorite => {
+        const row = document.createElement('tr');
+        
+        // Payload cell
+        const payloadCell = document.createElement('td');
+        const payloadText = document.createElement('code');
+        payloadText.className = 'payload-text';
+        payloadText.textContent = favorite.payload;
+        payloadCell.appendChild(payloadText);
+        row.appendChild(payloadCell);
+        
+        // Description cell
+        const descriptionCell = document.createElement('td');
+        descriptionCell.textContent = favorite.description;
+        row.appendChild(descriptionCell);
+        
+        // Action cell
+        const actionCell = document.createElement('td');
+        const buttonGroup = document.createElement('div');
+        buttonGroup.className = 'btn-group';
+        
+        // Copy button
+        const copyButton = document.createElement('button');
+        copyButton.className = 'btn btn-sm btn-primary btn-copy';
+        copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
+        copyButton.addEventListener('click', function() {
+            copyToClipboard(favorite.payload);
+            
+            // Add the copied class for animation
+            this.classList.add('copied');
+            setTimeout(() => {
+                this.classList.remove('copied');
+            }, 1500);
+        });
+        
+        // Remove favorite button
+        const removeButton = document.createElement('button');
+        removeButton.className = 'btn btn-sm btn-danger';
+        removeButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        removeButton.addEventListener('click', function() {
+            toggleFavoritePayload(favorite.payload, favorite.description);
+            
+            // Remove row with animation
+            row.style.transition = 'opacity 0.3s ease';
+            row.style.opacity = '0';
+            setTimeout(() => {
+                row.remove();
+                
+                // If no favorites left, hide the container
+                if (favoritesTable.children.length === 0) {
+                    favoritesContainer.classList.add('d-none');
+                }
+            }, 300);
+        });
+        
+        buttonGroup.appendChild(copyButton);
+        buttonGroup.appendChild(removeButton);
+        actionCell.appendChild(buttonGroup);
+        row.appendChild(actionCell);
+        
+        favoritesTable.appendChild(row);
+    });
+}
+
+// Clear all favorites
+function clearAllFavorites() {
+    if (confirm('Are you sure you want to clear all favorite payloads?')) {
+        localStorage.removeItem('favoritePayloads');
+        
+        const favoritesContainer = document.getElementById('favorites-container');
+        if (favoritesContainer) {
+            favoritesContainer.classList.add('d-none');
+        }
+    }
+}
+
+// Initialize recent payloads tracking
+function initializeRecentPayloads() {
+    // Create recent payloads container if it doesn't exist
+    if (!document.getElementById('recent-payloads-container')) {
+        const mainContent = document.querySelector('.container-fluid') || document.querySelector('.container');
+        if (!mainContent) return;
+        
+        const recentSection = document.createElement('div');
+        recentSection.id = 'recent-payloads-container';
+        recentSection.className = 'recent-payloads d-none';
+        recentSection.innerHTML = `
+            <h5><i class="fas fa-history"></i> Recently Used Payloads</h5>
+            <div id="recent-payloads-list" class="d-flex flex-wrap gap-2 my-2"></div>
+        `;
+        
+        // Insert before content but after search
+        const searchRow = document.querySelector('.row:has(#search-input)');
+        if (searchRow && searchRow.nextSibling) {
+            mainContent.insertBefore(recentSection, searchRow.nextSibling);
+        } else {
+            mainContent.insertBefore(recentSection, mainContent.firstChild);
+        }
+    }
+    
+    // Load recent payloads
+    loadRecentPayloads();
+}
+
+// Track payload usage for recent payloads feature
+function trackRecentPayload(payload) {
+    if (!payload) return;
+    
+    let recentPayloads = JSON.parse(localStorage.getItem('recentPayloads') || '[]');
+    
+    // Remove if already exists
+    recentPayloads = recentPayloads.filter(item => item.payload !== payload);
+    
+    // Add to beginning
+    recentPayloads.unshift({
+        payload: payload,
+        timestamp: new Date().toISOString()
+    });
+    
+    // Keep only latest 10
+    recentPayloads = recentPayloads.slice(0, 10);
+    
+    // Save to localStorage
+    localStorage.setItem('recentPayloads', JSON.stringify(recentPayloads));
+    
+    // Update display
+    loadRecentPayloads();
+}
+
+// Load and display recent payloads
+function loadRecentPayloads() {
+    const recentList = document.getElementById('recent-payloads-list');
+    const recentContainer = document.getElementById('recent-payloads-container');
+    
+    if (!recentList || !recentContainer) return;
+    
+    const recentPayloads = JSON.parse(localStorage.getItem('recentPayloads') || '[]');
+    
+    // Show or hide based on content
+    if (recentPayloads.length === 0) {
+        recentContainer.classList.add('d-none');
+        return;
+    } else {
+        recentContainer.classList.remove('d-none');
+    }
+    
+    // Clear existing items
+    recentList.innerHTML = '';
+    
+    // Add each recent payload
+    recentPayloads.forEach(item => {
+        const payloadItem = document.createElement('div');
+        payloadItem.className = 'badge bg-light text-dark d-flex align-items-center';
+        payloadItem.style.cursor = 'pointer';
+        
+        // Truncate long payloads
+        const displayText = item.payload.length > 30 
+            ? item.payload.substring(0, 30) + '...' 
+            : item.payload;
+        
+        payloadItem.innerHTML = `
+            <span title="${item.payload}">${displayText}</span>
+            <button class="btn btn-sm ms-2 p-0 border-0">
+                <i class="fas fa-copy text-primary"></i>
+            </button>
+        `;
+        
+        // Make the whole badge clickable to copy
+        payloadItem.addEventListener('click', function() {
+            copyToClipboard(item.payload);
+        });
+        
+        recentList.appendChild(payloadItem);
+    });
+}
+
+// Show skeleton loaders during initial data load
+function showSkeletonLoaders() {
+    const tables = document.querySelectorAll('.table tbody');
+    
+    tables.forEach(table => {
+        if (table.children.length === 0) {
+            const skeletonLoader = document.createElement('div');
+            skeletonLoader.className = 'skeleton-loader';
+            
+            // Create 3 skeleton rows
+            for (let i = 0; i < 3; i++) {
+                const skeletonRow = document.createElement('div');
+                skeletonRow.className = 'skeleton-row';
+                
+                // Create cells for each row
+                const payloadCell = document.createElement('div');
+                payloadCell.className = 'skeleton-cell';
+                payloadCell.style.width = '40%';
+                
+                const descCell = document.createElement('div');
+                descCell.className = 'skeleton-cell';
+                descCell.style.width = '45%';
+                
+                const actionCell = document.createElement('div');
+                actionCell.className = 'skeleton-cell';
+                actionCell.style.width = '15%';
+                
+                skeletonRow.appendChild(payloadCell);
+                skeletonRow.appendChild(descCell);
+                skeletonRow.appendChild(actionCell);
+                
+                skeletonLoader.appendChild(skeletonRow);
+            }
+            
+            table.parentNode.insertBefore(skeletonLoader, table);
+        }
+    });
+}
+
+// Hide skeleton loaders after data is loaded
+function hideSkeletonLoaders() {
+    document.querySelectorAll('.skeleton-loader').forEach(loader => {
+        loader.animate([
+            { opacity: 1 },
+            { opacity: 0 }
+        ], {
+            duration: 300,
+            easing: 'ease-out'
+        }).onfinish = () => loader.remove();
+    });
+}
+
+// Initialize scrollable tabs functionality
+function initializeTabScrolling() {
+    const tabsLists = document.querySelectorAll('.nav-tabs, [role="tablist"]');
+    
+    tabsLists.forEach(tabsList => {
+        // Skip if already in a scrollable container
+        if (tabsList.closest('.scrollable-tabs')) return;
+        
+        // Create container for scrollable tabs
+        const tabsContainer = document.createElement('div');
+        tabsContainer.className = 'tabs-container';
+        
+        // Create the scrollable tabs wrapper
+        const scrollableTabs = document.createElement('div');
+        scrollableTabs.className = 'scrollable-tabs';
+        
+        // Move the tabs into the scrollable container
+        tabsList.parentNode.insertBefore(tabsContainer, tabsList);
+        scrollableTabs.appendChild(tabsList);
+        tabsContainer.appendChild(scrollableTabs);
+        
+        // Add left and right scroll indicators
+        const leftIndicator = document.createElement('div');
+        leftIndicator.className = 'tabs-scroll-indicator left-indicator';
+        leftIndicator.innerHTML = '<i class="fas fa-chevron-left"></i>';
+        
+        const rightIndicator = document.createElement('div');
+        rightIndicator.className = 'tabs-scroll-indicator right-indicator';
+        rightIndicator.innerHTML = '<i class="fas fa-chevron-right"></i>';
+        
+        tabsContainer.appendChild(leftIndicator);
+        tabsContainer.appendChild(rightIndicator);
+        
+        // Add scroll event handler
+        scrollableTabs.addEventListener('scroll', () => {
+            updateTabScrollIndicators(scrollableTabs, leftIndicator, rightIndicator);
+        });
+        
+        // Add click handlers
+        leftIndicator.addEventListener('click', () => {
+            scrollableTabs.scrollBy({ left: -200, behavior: 'smooth' });
+        });
+        
+        rightIndicator.addEventListener('click', () => {
+            scrollableTabs.scrollBy({ left: 200, behavior: 'smooth' });
+        });
+        
+        // Initialize indicators state
+        updateTabScrollIndicators(scrollableTabs, leftIndicator, rightIndicator);
+        
+        // Update on window resize
+        window.addEventListener('resize', () => {
+            updateTabScrollIndicators(scrollableTabs, leftIndicator, rightIndicator);
+        });
+    });
+}
+
+// Update tab scroll indicators visibility
+function updateTabScrollIndicators(scrollContainer, leftIndicator, rightIndicator) {
+    // Show/hide left indicator
+    if (scrollContainer.scrollLeft <= 5) {
+        leftIndicator.classList.remove('show');
+    } else {
+        leftIndicator.classList.add('show');
+    }
+    
+    // Show/hide right indicator
+    if (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth - 5) {
+        rightIndicator.classList.remove('show');
+    } else {
+        rightIndicator.classList.add('show');
+    }
+}
+
+// Setup tag filtering functionality
+function setupTagFiltering() {
+    // Function is now empty - tag container functionality removed
+    return;
+}
+
+// Setup mobile sticky search
+function setupMobileStickySearch() {
+    if (window.innerWidth < 992) {
+        const searchRow = document.querySelector('.row:has(#search-input)');
+        if (searchRow) {
+            searchRow.classList.add('mobile-search-container');
+        }
+    }
+}
+
+// Simulate hover effects for mobile devices
+function simulateTouchHover() {
+    const interactiveElements = document.querySelectorAll('.btn, .tag-badge, .nav-link');
+    
+    interactiveElements.forEach(element => {
+        element.addEventListener('touchstart', function() {
+            this.classList.add('touch-hover');
+        });
+        
+        element.addEventListener('touchend', function() {
+            setTimeout(() => {
+                this.classList.remove('touch-hover');
+            }, 300);
+        });
+        
+        element.addEventListener('touchcancel', function() {
+            this.classList.remove('touch-hover');
+        });
     });
 }
