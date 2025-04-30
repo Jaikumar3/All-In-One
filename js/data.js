@@ -705,21 +705,6 @@ const resourcesData = [
         name: "Exploit Database",
         description: "Archive of exploits and vulnerable software",
         link: "https://www.exploit-db.com/"
-    },
-    {
-        name: "GTFOBins",
-        description: "Curated list of Unix binaries that can be used to bypass security restrictions",
-        link: "https://gtfobins.github.io/"
-    },
-    {
-        name: "LOLBAS",
-        description: "Living Off The Land Binaries and Scripts (Windows)",
-        link: "https://lolbas-project.github.io/"
-    },
-    {
-        name: "PortSwigger XSS Cheat Sheet",
-        description: "Comprehensive collection of XSS attack vectors and bypasses",
-        link: "https://portswigger.net/web-security/cross-site-scripting/cheat-sheet"
     }
 ];
 
@@ -796,5 +781,276 @@ const htmlPayloadsData = [
     {
         payload: "<input type=\"file\" accept=\"image/*\" capture=\"camera\">",
         description: "File input with camera capture"
+    }
+];
+
+// Windows Privilege Escalation data
+const windowsPrivescData = [
+    {
+        payload: "whoami /priv",
+        description: "Display the security privileges of the current user"
+    },
+    {
+        payload: "whoami /groups",
+        description: "Display group membership of the current user"
+    },
+    {
+        payload: "net user %username%",
+        description: "Display information about the current user account"
+    },
+    {
+        payload: "net localgroup administrators",
+        description: "List members of the local administrators group"
+    },
+    {
+        payload: "wmic service get name,displayname,pathname,startmode | findstr /i \"auto\" | findstr /i /v \"c:\\windows\"",
+        description: "Find services with unquoted paths that might be exploitable"
+    },
+    {
+        payload: "wmic service get name,displayname,startmode,pathname | findstr /i \"auto\" | findstr /i /v \"c:\\windows\\\\system32\"",
+        description: "Alternative to find services with unquoted paths"
+    },
+    {
+        payload: "icacls \"C:\\Program Files\\*\" | findstr \"BUILTIN\\Users:(F)\" | findstr \":(F)\"",
+        description: "Check for write permissions in Program Files"
+    },
+    {
+        payload: "icacls \"C:\\Program Files (x86)\\*\" | findstr \"BUILTIN\\Users:(F)\" | findstr \":(F)\"",
+        description: "Check for write permissions in Program Files (x86)"
+    },
+    {
+        payload: "schtasks /query /fo LIST /v",
+        description: "List all scheduled tasks on the system"
+    },
+    {
+        payload: "netsh firewall show state",
+        description: "Show the firewall configuration"
+    },
+    {
+        payload: "netsh firewall show config",
+        description: "Show the firewall configuration details"
+    },
+    {
+        payload: "reg query HKLM /f password /t REG_SZ /s",
+        description: "Search for passwords in the registry"
+    },
+    {
+        payload: "reg query HKCU /f password /t REG_SZ /s",
+        description: "Search for passwords in the current user registry"
+    },
+    {
+        payload: "cmdkey /list",
+        description: "List stored credentials"
+    },
+    {
+        payload: "wmic product get name,version,vendor",
+        description: "List installed applications"
+    },
+    {
+        payload: "systeminfo",
+        description: "Get detailed system information to identify missing patches"
+    },
+    {
+        payload: "wmic qfe get Caption,Description,HotFixID,InstalledOn",
+        description: "List installed patches"
+    },
+    {
+        payload: "dir /s *pass* == *cred* == *vnc* == *.config*",
+        description: "Search for sensitive files"
+    },
+    {
+        payload: "findstr /si password *.xml *.ini *.txt *.config *.bat",
+        description: "Search for passwords in various file types"
+    },
+    {
+        payload: "tasklist /SVC",
+        description: "List running processes and their associated services"
+    }
+];
+
+// Resources specifically for Windows privilege escalation
+const windowsPrivescResourcesData = [
+    {
+        name: "LOLBAS",
+        description: "Living Off The Land Binaries and Scripts - Windows binaries that can be abused",
+        link: "https://lolbas-project.github.io/"
+    },
+    {
+        name: "PayloadsAllTheThings - Windows Privilege Escalation",
+        description: "Comprehensive guide for Windows privilege escalation techniques",
+        link: "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md"
+    },
+    {
+        name: "PowerUp.ps1",
+        description: "PowerShell script for Windows privilege escalation enumeration",
+        link: "https://github.com/PowerShellMafia/PowerSploit/blob/master/Privesc/PowerUp.ps1"
+    },
+    {
+        name: "WinPEAS",
+        description: "Windows Privilege Escalation Awesome Script",
+        link: "https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS"
+    },
+    {
+        name: "Windows Exploit Suggester - Next Generation",
+        description: "Tool to identify exploits for vulnerable Windows components",
+        link: "https://github.com/bitsadmin/wesng"
+    },
+    {
+        name: "Priv2Admin",
+        description: "Windows Privilege Escalation to Admin tools and techniques",
+        link: "https://github.com/gtworek/Priv2Admin"
+    },
+    {
+        name: "HackTricks - Windows Privilege Escalation",
+        description: "Detailed guide for Windows privilege escalation techniques",
+        link: "https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation"
+    },
+    {
+        name: "WindowsEnum",
+        description: "PowerShell enumeration script for Windows privilege escalation",
+        link: "https://github.com/absolomb/WindowsEnum"
+    },
+    {
+        name: "PrivescCheck",
+        description: "Privilege Escalation Enumeration Script for Windows",
+        link: "https://github.com/itm4n/PrivescCheck"
+    }
+];
+
+// Linux Privilege Escalation data
+const linuxPrivescData = [
+    {
+        payload: "id",
+        description: "Display user and group IDs"
+    },
+    {
+        payload: "uname -a",
+        description: "Print system information"
+    },
+    {
+        payload: "cat /etc/issue; cat /etc/*-release",
+        description: "Show Linux distribution information"
+    },
+    {
+        payload: "cat /proc/version",
+        description: "Display kernel information"
+    },
+    {
+        payload: "hostname",
+        description: "Show system hostname"
+    },
+    {
+        payload: "cat /etc/passwd",
+        description: "List all users on the system"
+    },
+    {
+        payload: "cat /etc/shadow",
+        description: "Try to read shadow password file (requires privileges)"
+    },
+    {
+        payload: "cat /etc/group",
+        description: "List all groups on the system"
+    },
+    {
+        payload: "ls -la /etc/sudoers; sudo -l",
+        description: "Check sudo permissions"
+    },
+    {
+        payload: "find / -perm -u=s -type f 2>/dev/null",
+        description: "Find SUID files"
+    },
+    {
+        payload: "find / -perm -g=s -type f 2>/dev/null",
+        description: "Find SGID files"
+    },
+    {
+        payload: "find / -writable -type d 2>/dev/null",
+        description: "Find world-writeable directories"
+    },
+    {
+        payload: "find / -writable -type f 2>/dev/null",
+        description: "Find world-writeable files"
+    },
+    {
+        payload: "find / -user root -perm -4000 -exec ls -ld {} \\; 2>/dev/null",
+        description: "Find root owned files with SUID bit set"
+    },
+    {
+        payload: "crontab -l; ls -la /etc/cron*",
+        description: "List scheduled cron jobs"
+    },
+    {
+        payload: "ps aux | grep root",
+        description: "Find processes running as root"
+    },
+    {
+        payload: "netstat -tulpn",
+        description: "Show listening ports and associated processes"
+    },
+    {
+        payload: "cat /etc/fstab",
+        description: "Show mounted file systems"
+    },
+    {
+        payload: "find / -name '*.bak' -o -name '*.old' 2>/dev/null",
+        description: "Find backup files"
+    },
+    {
+        payload: "env",
+        description: "Show environment variables"
+    }
+];
+
+// Resources specifically for Linux privilege escalation
+const linuxPrivescResourcesData = [
+    {
+        name: "PayloadsAllTheThings - Linux Privilege Escalation",
+        description: "Comprehensive guide for Linux privilege escalation techniques",
+        link: "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Linux%20-%20Privilege%20Escalation.md"
+    },
+    {
+        name: "GTFOBins",
+        description: "Unix binaries that can be exploited for privilege escalation",
+        link: "https://gtfobins.github.io/"
+    },
+    {
+        name: "LinPEAS",
+        description: "Linux Privilege Escalation Awesome Script",
+        link: "https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS"
+    },
+    {
+        name: "Linux Exploit Suggester 2",
+        description: "Tool to identify potential privilege escalation vectors",
+        link: "https://github.com/jondonas/linux-exploit-suggester-2"
+    },
+    {
+        name: "LinEnum",
+        description: "Scripted Local Linux Enumeration & Privilege Escalation Checks",
+        link: "https://github.com/rebootuser/LinEnum"
+    },
+    {
+        name: "pspy",
+        description: "Monitor Linux processes without root permissions",
+        link: "https://github.com/DominicBreuker/pspy"
+    },
+    {
+        name: "linux-smart-enumeration",
+        description: "Linux enumeration tool for pentesting and CTFs",
+        link: "https://github.com/diego-treitos/linux-smart-enumeration"
+    },
+    {
+        name: "HackTricks - Linux Privilege Escalation",
+        description: "Detailed guide for Linux privilege escalation techniques",
+        link: "https://book.hacktricks.xyz/linux-hardening/privilege-escalation"
+    },
+    {
+        name: "Linux Privilege Escalation Checklist",
+        description: "g0tmi1k's Linux Privilege Escalation guide",
+        link: "https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/"
+    },
+    {
+        name: "unix-privesc-check",
+        description: "Shell script to check for simple privilege escalation vectors",
+        link: "https://github.com/pentestmonkey/unix-privesc-check"
     }
 ];
