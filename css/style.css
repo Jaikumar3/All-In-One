@@ -2,6 +2,11 @@
 
 /* Dark mode styles */
 :root {
+    --mobile-breakpoint: 576px;
+    --tablet-breakpoint: 768px;
+    --desktop-breakpoint: 992px;
+    --large-desktop-breakpoint: 1200px;
+
     --body-bg: #f5f5f5;
     --card-bg: #fff;
     --text-color: #212529;
@@ -9,6 +14,16 @@
     --table-hover-bg: rgba(13, 110, 253, 0.05);
     --code-bg: #f8f9fa;
     --code-color: #212529;
+
+    /* New mobile-specific variables */
+    --mobile-touch-target: 44px;
+    --mobile-padding: 10px;
+    --mobile-font-size: 0.875rem;
+
+    /* Enhanced smooth scrolling for mobile */
+    scroll-behavior: smooth;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 [data-bs-theme="dark"] {
@@ -26,11 +41,13 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scrolling on mobile */
 }
 
-/* Smooth scrolling for anchor links */
 html {
     scroll-behavior: smooth;
+    /* Fix 100vh issue on mobile browsers */
+    height: -webkit-fill-available;
 }
 
 /* Body styles */
@@ -40,6 +57,12 @@ body {
     color: var(--text-color);
     display: flex;
     flex-direction: column;
+    text-size-adjust: 100%; /* Prevent iOS auto text resize */
+    -webkit-text-size-adjust: 100%;
+    touch-action: manipulation; /* Improve mobile touch behavior */
+    min-height: 100vh;
+    /* Fix for mobile browsers */
+    min-height: -webkit-fill-available;
 }
 
 /* Make main content fill available space */
@@ -125,6 +148,46 @@ main {
 .btn-copy {
     padding: 2px 8px;
     font-size: 0.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-copy::after {
+    content: "Copied!";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #198754;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.btn-copy.copied::after {
+    transform: translateY(0);
+}
+
+.btn-favorite {
+    color: #6c757d;
+    transition: color 0.3s ease;
+}
+
+.btn-favorite.active {
+    color: #ffc107;
+}
+
+.btn-favorite:hover {
+    color: #ffc107;
+}
+
+.btn.active, .btn:active {
+    transform: scale(0.96);
+    opacity: 0.9;
 }
 
 /* Table styles */
@@ -152,6 +215,7 @@ main {
     vertical-align: middle;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    max-width: 0; /* Add this to force wrapping */
 }
 
 /* Column widths */
@@ -212,6 +276,8 @@ pre.code-block {
     overflow-y: hidden;
     scrollbar-width: thin;
     padding-bottom: 5px;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
 }
 
 .nav-tabs::-webkit-scrollbar {
@@ -227,6 +293,180 @@ pre.code-block {
     white-space: nowrap;
 }
 
+/* Tab scroll indicators for mobile */
+.tab-scroll-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tab-scroll-left {
+    left: 0;
+}
+
+.tab-scroll-right {
+    right: 0;
+}
+
+/* Scrollable Tabs with Indicators */
+.tabs-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.tabs-scroll-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tabs-scroll-indicator.show {
+    opacity: 0.7;
+}
+
+.left-indicator {
+    left: 0;
+}
+
+.right-indicator {
+    right: 0;
+}
+
+.scrollable-tabs {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+}
+
+.scrollable-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+/* Skeleton Loading Animation */
+.skeleton-loader {
+    width: 100%;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-row {
+    display: flex;
+    margin-bottom: 10px;
+    height: 30px;
+}
+
+.skeleton-cell {
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+[data-bs-theme="dark"] .skeleton-cell {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* Mobile Sticky Search */
+@media (max-width: 992px) {
+    .mobile-search-container {
+        position: sticky;
+        top: 56px; /* Height of navbar */
+        z-index: 1020;
+        background: var(--bs-dark);
+        padding: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+}
+
+/* Recent Payloads Section */
+.recent-payloads {
+    margin-bottom: 30px;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #0d6efd;
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+[data-bs-theme="dark"] .recent-payloads {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+/* Tag Filtering */
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.tag-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.tag-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tag-badge.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* Payload Testing Area */
+.payload-sandbox {
+    background-color: var(--card-bg);
+    border: 1px solid rgba(0,0,0,0.125);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.sandbox-output {
+    margin-top: 15px;
+    min-height: 100px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: var(--code-bg);
+}
+
 /* Responsive adjustments */
 @media (max-width: 992px) {
     .table-responsive {
@@ -236,12 +476,37 @@ pre.code-block {
     .payload-text {
         min-width: 200px;
     }
+    
+    /* Improve tab navigation on tablets */
+    .nav-tabs .nav-item {
+        margin-bottom: 5px;
+    }
+    
+    /* Adjust card spacing for better tablet view */
+    .card {
+        margin-bottom: 15px;
+    }
+    
+    /* Fix z-index for navbar on mobile */
+    .navbar {
+        z-index: 1030;
+    }
+    
+    /* Improve dropdown menus on mobile */
+    .dropdown-menu {
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dropdown-item {
+        padding: 10px 20px;
+    }
 }
 
 @media (max-width: 768px) {
     .container {
-        padding-left: 10px;
-        padding-right: 10px;
+        padding-left: calc(10px + env(safe-area-inset-left));
+        padding-right: calc(10px + env(safe-area-inset-right));
         max-width: 100%;
     }
     
@@ -261,6 +526,387 @@ pre.code-block {
         margin-left: -10px;
         margin-right: -10px;
         width: calc(100% + 20px);
+        -webkit-overflow-scrolling: touch;
+        overflow-x: auto;
+        position: relative;
+    }
+
+    .table-responsive::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 20px;
+        background: linear-gradient(to right, transparent, var(--body-bg));
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .table-responsive.has-overflow::after {
+        opacity: 1;
+    }
+
+    /* Improve table display on mobile */
+    .table td, .table th {
+        padding: 8px 5px;
+        font-size: 0.9rem;
+    }
+
+    /* Better touch targets for mobile */
+    .btn {
+        padding: 8px 12px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Add active state for better touch feedback */
+    .btn.active, .btn:active {
+        transform: scale(0.96);
+        opacity: 0.9;
+    }
+
+    /* Adjust navbar for better mobile viewing */
+    .navbar-nav {
+        margin-bottom: 10px;
+    }
+
+    /* Input group in navbar needs special handling */
+    .navbar .input-group {
+        width: 100%;
+        max-width: 100%;
+        margin: 8px 0;
+    }
+
+    /* Better spacing for elements */
+    .card-body {
+        padding: 15px 10px;
+    }
+
+    /* Improved mobile viewing of code blocks */
+    .payload-text {
+        font-size: 0.85rem;
+        padding: 6px;
+        max-width: 100%;
+        white-space: pre-wrap;
+    }
+    
+    /* Improve tab display on mobile */
+    .nav-tabs {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Improve button groups on mobile */
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        margin-bottom: 5px;
+        border-radius: 4px !important;
+    }
+    
+    /* Fix horizontal scrolling issues */
+    .table-responsive table {
+        min-width: 100%;
+    }
+    
+    /* Fix for bottom navigation on newer phones */
+    main {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    /* Improve navbar collapse animation */
+    .navbar-collapse {
+        transition: height 0.3s ease-in-out;
+    }
+    
+    /* Fix for fixed elements on mobile */
+    .navbar, .copy-notification {
+        padding-top: env(safe-area-inset-top);
+    }
+    
+    /* Prevent content from being hidden under bottom nav bars */
+    .mb-4:last-child, .mb-5:last-child {
+        margin-bottom: calc(1.5rem + env(safe-area-inset-bottom)) !important;
+    }
+    
+    /* Better tab container positioning for mobile */
+    .nav-tabs-container {
+        position: relative;
+        overflow: hidden;
+        padding: 0 30px;
+        margin: 0 -15px;
+    }
+    
+    /* Improved table display on mobile */
+    .table {
+        font-size: var(--mobile-font-size);
+    }
+    
+    /* Make mobile forms more accessible */
+    input, select, textarea, .form-control {
+        height: var(--mobile-touch-target);
+        font-size: 16px !important; /* Prevents iOS zoom on focus */
+    }
+    
+    /* Fix mobile search */
+    .search-container {
+        position: relative;
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+    
+    /* Column width adjustments for tables on very small screens */
+    .table th:nth-child(1), .table td:nth-child(1) {
+        width: 35%;
+    }
+    
+    .table th:nth-child(2), .table td:nth-child(2) {
+        width: 40%;
+    }
+    
+    .table th:nth-child(3), .table td:nth-child(3) {
+        width: 25%;
+    }
+    
+    /* Adjusted copy button for small screens */
+    .btn-copy {
+        padding: 6px;
+        min-height: 38px;
+    }
+    
+    .btn-copy i {
+        margin: 0;
+    }
+    
+    .btn-copy span {
+        display: none;
+    }
+    
+    /* Improve touch targets on small devices */
+    .table td, .table th {
+        padding: 10px 5px;
+    }
+    
+    /* Better fit cards on small screens */
+    .card-header {
+        padding: 10px 15px;
+    }
+    
+    /* Fix search input on mobile */
+    #search-input {
+        height: 44px;
+    }
+    
+    /* Improve nav tabs scroll behavior */
+    .nav-tabs .nav-link {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+    
+    /* Fix notification position on very small screens */
+    .copy-notification {
+        left: 10px;
+        right: 10px;
+        width: auto;
+        text-align: center;
+        font-size: 14px;
+        padding: 8px 12px;
+        top: calc(10px + env(safe-area-inset-top));
+    }
+    
+    /* Fix for very small screens */
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    /* Optimize table display on small screens */
+    .table td, .table th {
+        padding: 10px 5px;
+        font-size: 0.8rem;
+        white-space: normal;
+        word-break: break-word;
+    }
+    
+    /* Make sure text in tables doesn't overflow on mobile */
+    .table .payload-text {
+        font-size: 0.8rem;
+        padding: 4px;
+        max-width: 100%;
+        overflow-wrap: break-word;
+    }
+    
+    /* Improved card display on small screens */
+    .card {
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Fix spacing in navbar on small screens */
+    .navbar-brand {
+        margin-right: 0;
+        max-width: 70%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* Additional mobile fixes for very small devices */
+@media (max-width: 375px) {
+    body {
+        font-size: 0.875rem;
+    }
+    
+    .table td, .table th {
+        padding: 8px 4px;
+        font-size: 0.8rem;
+    }
+    
+    .btn {
+        padding: 6px 10px;
+        font-size: 0.875rem;
+    }
+    
+    .card-body {
+        padding: 12px 8px;
+    }
+    
+    /* Ensure payload text is properly contained in small screens */
+    .payload-text {
+        font-size: 0.75rem;
+        padding: 4px;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Further optimize table layout for tiny screens */
+    .table th:nth-child(1), .table td:nth-child(1) {
+        width: 40%;
+    }
+    
+    .table th:nth-child(2), .table td:nth-child(2) {
+        width: 35%;
+    }
+    
+    .table th:nth-child(3), .table td:nth-child(3) {
+        width: 25%;
+    }
+    
+    /* Better fit for small screens */
+    .container {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+    
+    /* Improve interaction on tiny screens */
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Additional mobile fixes for very small devices */
+@media (max-width: 375px) {
+    body {
+        font-size: 0.875rem;
+    }
+    
+    .table td, .table th {
+        padding: 8px 4px;
+        font-size: 0.8rem;
+    }
+    
+    .btn {
+        padding: 6px 10px;
+        font-size: 0.875rem;
+    }
+    
+    .card-body {
+        padding: 12px 8px;
+    }
+    
+    /* Ensure payload text is properly contained in small screens */
+    .payload-text {
+        font-size: 0.75rem;
+        padding: 4px;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Further optimize table layout for tiny screens */
+    .table th:nth-child(1), .table td:nth-child(1) {
+        width: 40%;
+    }
+    
+    .table th:nth-child(2), .table td:nth-child(2) {
+        width: 35%;
+    }
+    
+    .table th:nth-child(3), .table td:nth-child(3) {
+        width: 25%;
+    }
+    
+    /* Better fit for small screens */
+    .container {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+    
+    /* Improve interaction on tiny screens */
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Fix for iOS devices to ensure proper rendering */
+@supports (-webkit-touch-callout: none) {
+    /* CSS specific to iOS devices */
+    .btn, .nav-link, select, input {
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Fix for 100vh issue on iOS */
+    .min-vh-100 {
+        min-height: -webkit-fill-available;
+    }
+    
+    /* Fix for Safari mobile bounce effect */
+    body {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Fix for input focusing on iOS */
+    input, select, textarea {
+        font-size: 16px !important;
     }
 }
 
@@ -288,45 +934,128 @@ a.external-link:hover {
     text-decoration: underline;
 }
 
-a.external-link i {
-    margin-left: 5px;
-    font-size: 0.8em;
-}
-
-/* Search results highlight */
-.highlight {
-    background-color: yellow;
-    padding: 2px;
-    border-radius: 2px;
-}
-
-/* Search no results message */
-.no-results {
-    padding: 20px;
-    text-align: center;
-    color: #6c757d;
-    font-style: italic;
-}
-
-/* Loading spinner */
-.spinner-border {
-    display: none;
-    margin: 0 auto;
-}
-
-/* Sticky sidebar for better navigation */
-@media (min-width: 992px) {
-    .sticky-sidebar {
-        position: sticky;
-        top: 80px;
-        height: calc(100vh - 100px);
+/* Enhanced mobile navigation */
+@media (max-width: 768px) {
+    /* Make navbar items larger and easier to tap */
+    .navbar-nav .nav-link {
+        padding: 12px 15px;
+        margin: 2px 0;
+        border-radius: 4px;
+    }
+    
+    /* Improved navbar collapse behavior */
+    .navbar-collapse {
+        max-height: 80vh;
         overflow-y: auto;
+    }
+    
+    /* Better handling of long tab lists on mobile */
+    .nav-tabs {
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+    }
+    
+    .nav-tabs .nav-link {
+        scroll-snap-align: start;
+        min-width: 120px;
+        text-align: center;
+    }
+    
+    /* Ensure tables are fully responsive */
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+    }
+    
+    /* Better spacing for sections */
+    section {
+        margin-bottom: 2rem;
+    }
+    
+    /* Improve form controls for touch */
+    input, select, textarea {
+        font-size: 16px !important; /* Prevents iOS zoom on focus */
+    }
+    
+    /* Make cards more touch-friendly */
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    /* Fix for modals on mobile */
+    .modal-dialog {
+        margin: 0.5rem;
     }
 }
 
-/* Dark mode toggle */
-.theme-toggle {
-    display: inline-block;
-    padding: 5px;
-    cursor: pointer;
+/* Landscape orientation specific fixes for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .navbar-collapse {
+        max-height: 60vh;
+    }
+    
+    .container {
+        max-width: 100%;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    /* Adjust headers for landscape */
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    /* Allow more horizontal space in landscape */
+    .table th:nth-child(1), .table td:nth-child(1) {
+        width: 35%;
+    }
+    
+    .table th:nth-child(2), .table td:nth-child(2) {
+        width: 45%;
+    }
+    
+    .table th:nth-child(3), .table td:nth-child(3) {
+        width: 20%;
+    }
+    
+    /* Better spacing for landscape orientation */
+    .container {
+        max-width: 100%;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    /* Fix navbar in landscape mode */
+    .navbar-collapse {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    /* Adjust button size for landscape */
+    .btn {
+        padding: 6px 12px;
+        min-height: 38px; /* Smaller than portrait but still touchable */
+    }
+}
+
+/* Styles for screens with notches */
+@supports (padding-top: env(safe-area-inset-top)) {
+    .navbar {
+        padding-top: env(safe-area-inset-top);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+    
+    .fixed-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* Optimize performance during scrolling */
+.is-scrolling .card {
+    will-change: transform;
+}
+
+.is-scrolling .payload-text {
+    will-change: contents;
 }
