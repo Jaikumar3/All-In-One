@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Security Payload Repository</title>
     <link rel="stylesheet" href="css/style.css">
     <!-- Bootstrap CSS -->
@@ -20,28 +20,67 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
         <div class="container">
+            <a class="navbar-brand d-lg-none" href="#">Security</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link" href="#wordlists">Wordlists</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#xss">XSS Payloads</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#html-payloads">HTML Payloads</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#lfi">LFI Payloads</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#cmd-injection">Command Injection</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#sql-injection">SQL Injection</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#regex">Regex Patterns</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#resources">External Resources</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    
+                    <!-- Web Attacks Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="webAttacksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bug"></i> Web Attacks
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="webAttacksDropdown">
+                            <li><a class="dropdown-item" href="#xss"><i class="fas fa-code"></i> XSS Payloads</a></li>
+                            <li><a class="dropdown-item" href="#html-payloads"><i class="fas fa-file-code"></i> HTML Payloads</a></li>
+                            <li><a class="dropdown-item" href="#lfi"><i class="fas fa-folder-open"></i> LFI Payloads</a></li>
+                            <li><a class="dropdown-item" href="#sql-injection"><i class="fas fa-database"></i> SQL Injection</a></li>
+                            <li><a class="dropdown-item" href="#cmd-injection"><i class="fas fa-terminal"></i> Command Injection</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Privilege Escalation Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="privescDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-level-up-alt"></i> Privilege Escalation
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="privescDropdown">
+                            <li><a class="dropdown-item" href="#windows-privesc"><i class="fab fa-windows"></i> Windows PrivEsc</a></li>
+                            <li><a class="dropdown-item" href="#linux-privesc"><i class="fab fa-linux"></i> Linux PrivEsc</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Utilities Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="utilitiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-tools"></i> Utilities
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="utilitiesDropdown">
+                            <li><a class="dropdown-item" href="#wordlists"><i class="fas fa-list"></i> Wordlists</a></li>
+                            <li><a class="dropdown-item" href="#regex"><i class="fas fa-code-branch"></i> Regex Patterns</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Resources Link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#resources"><i class="fas fa-book"></i> Resources</a>
+                    </li>
                 </ul>
-                <div class="input-group" style="max-width: 300px;">
-                    <input type="text" id="search-input" class="form-control" placeholder="Search payloads...">
-                    <button class="btn btn-light" id="search-button">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-                <div class="theme-toggle ms-2" id="theme-toggle">
-                    <i class="fas fa-moon text-white"></i>
+                <div class="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center mt-2 mt-lg-0">
+                    <div class="input-group mb-2 mb-lg-0" style="max-width: 300px;">
+                        <input type="text" id="search-input" class="form-control" placeholder="Search payloads...">
+                        <button class="btn btn-light" id="search-button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="theme-toggle ms-lg-2 mt-2 mt-lg-0 text-center" id="theme-toggle">
+                        <i class="fas fa-moon text-white"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -411,6 +450,90 @@
                     </div>
                 </section>
 
+                <!-- Windows Privilege Escalation Section -->
+                <section id="windows-privesc" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h2>Windows Privilege Escalation</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Windows privilege escalation techniques, commands, and tools.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Payload</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="windows-privesc-table">
+                                        <!-- Windows privilege escalation payloads will be loaded here by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <h3 class="mt-4">Resources</h3>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Link</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="windows-privesc-resources-table">
+                                        <!-- Windows privilege escalation resources will be loaded here by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Linux Privilege Escalation Section -->
+                <section id="linux-privesc" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h2>Linux Privilege Escalation</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Linux privilege escalation techniques, commands, and tools.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Payload</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="linux-privesc-table">
+                                        <!-- Linux privilege escalation payloads will be loaded here by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <h3 class="mt-4">Resources</h3>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Link</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="linux-privesc-resources-table">
+                                        <!-- Linux privilege escalation resources will be loaded here by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <section id="cmd-injection" class="mb-5">
                     <div class="card">
                         <div class="card-header bg-dark text-white">
@@ -516,7 +639,7 @@
 
     <footer class="bg-dark text-white py-3">
         <div class="container text-center">
-            <p>&copy; 2025 Security Payload Repository. All rights reserved.</p>
+            <p>&copy; With Love Jai. All rights reserved.</p>
         </div>
     </footer>
 
