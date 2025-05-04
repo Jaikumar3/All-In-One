@@ -31,7 +31,12 @@ const wordlistsData = [
         name: "Backup Files Wordlist",
         description: "Comprehensive list of backup file extensions and patterns",
         link: "https://raw.githubusercontent.com/coffinxp/payloads/refs/heads/main/backup_files_only.txt"
-    }
+    },
+    {
+        name: "SQL Authentication Payloads",
+        description: "Comprehensive wordlist of SQL authentication bypass payloads",
+        link: "https://raw.githubusercontent.com/Jaikumar3/Wordlists/refs/heads/main/Sql%20auth%20Payloads"
+    } 
 ];
 
 // XSS Payloads data organized by categories (based on PortSwigger's XSS Cheat Sheet)
