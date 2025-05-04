@@ -467,6 +467,118 @@ pre.code-block {
     background-color: var(--code-bg);
 }
 
+/* Search Results Panel */
+.search-results-panel {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    z-index: 1020;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 80vh;
+    overflow-y: auto;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.search-results-panel.d-none {
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+}
+
+.search-results-panel .card {
+    margin-bottom: 0;
+}
+
+.search-results-container {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.search-category {
+    margin-bottom: 15px;
+}
+
+.search-category h6 {
+    font-weight: 600;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.search-result-item {
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.search-result-item:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.search-result-payload {
+    font-family: monospace;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 4px;
+    border-radius: 3px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.search-result-description {
+    font-size: 0.85em;
+    opacity: 0.8;
+    margin-top: 3px;
+}
+
+.search-result-meta {
+    font-size: 0.75em;
+    opacity: 0.6;
+    margin-top: 3px;
+}
+
+.search-count {
+    font-weight: bold;
+}
+
+.search-highlight {
+    background-color: rgba(255, 255, 0, 0.3);
+    font-weight: 500;
+    border-radius: 2px;
+    padding: 0 2px;
+}
+
+/* Animation for search results */
+@keyframes fadeInResults {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.search-result-item {
+    animation: fadeInResults 0.2s ease-out forwards;
+}
+
+/* Clear search button style */
+#clear-search-button:focus {
+    box-shadow: none;
+}
+
+/* Improved input focus */
+#search-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: #80bdff;
+}
+
 /* Responsive adjustments */
 @media (max-width: 992px) {
     .table-responsive {
@@ -1058,4 +1170,32 @@ a.external-link:hover {
 
 .is-scrolling .payload-text {
     will-change: contents;
+}
+
+/* Content modal styles */
+.content-pre {
+    max-height: 70vh;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+}
+
+[data-bs-theme="dark"] .content-pre {
+    background-color: #212529;
+    color: #f8f9fa;
+}
+
+/* Make sure the modal displays on top of everything */
+.modal-backdrop {
+    z-index: 1040;
+}
+.modal {
+    z-index: 1045;
+}
+
+.modal-dialog-scrollable .modal-content {
+    max-height: 90vh;
 }
