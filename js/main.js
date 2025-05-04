@@ -72,11 +72,10 @@ function initializePage() {
     populateTable('xss-context-table', xssData.contextSpecific, createBrowserSpecificRow);
     populateTable('xss-browser-table', xssData.browserSpecific, createBrowserSpecificRow);
     populateTable('xss-css-table', xssData.cssBased, createBrowserSpecificRow);
-    // Add HTML-specific and Angular payloads tables
     populateTable('xss-html-specific-table', xssData.htmlSpecific, createPayloadRow);
     populateTable('xss-angular-table', xssData.angularPayloads, createPayloadRow);
     
-    // Populate separate HTML payloads table (not part of XSS)
+    // Populate HTML payloads table
     populateTable('html-payloads-table', htmlPayloadsData, createPayloadRow);
     
     populateTable('lfi-table', lfiData, createPayloadRow);
@@ -96,6 +95,9 @@ function initializePage() {
     
     // Initialize skeleton loading state
     showSkeletonLoaders();
+    
+    // Initialize tab persistence
+    initializeTabPersistence();
     
     // Simulate loading data (remove in production if data is loaded immediately)
     setTimeout(() => {
@@ -243,28 +245,101 @@ function createWordlistRow(wordlist) {
     const btnGroup = document.createElement('div');
     btnGroup.className = 'btn-group';
     
-    // Open link button
-    const link = document.createElement('a');
-    link.href = wordlist.link;
-    link.target = '_blank';
-    link.className = 'btn btn-sm btn-primary';
-    link.innerHTML = '<i class="fas fa-external-link-alt"></i> Open';
-    
-    // Copy content button
-    const copyContentBtn = document.createElement('button');
-    copyContentBtn.className = 'btn btn-sm btn-success';
-    copyContentBtn.innerHTML = '<i class="fas fa-file-download"></i> Copy Content';
-    copyContentBtn.addEventListener('click', function() {
-        fetchAndCopyWordlistContent(wordlist.link, wordlist.name);
-    });
+    // If wordlist has a link, add Open button
+    if (wordlist.link) {
+        // Open link button
+        const link = document.createElement('a');
+        link.href = wordlist.link;
+        link.target = '_blank';
+        link.className = 'btn btn-sm btn-primary';
+        link.innerHTML = '<i class="fas fa-external-link-alt"></i> Open';
+        btnGroup.appendChild(link);
+        
+        // Copy content button for linked wordlists
+        const copyContentBtn = document.createElement('button');
+        copyContentBtn.className = 'btn btn-sm btn-success';
+        copyContentBtn.innerHTML = '<i class="fas fa-file-download"></i> Copy Content';
+        copyContentBtn.addEventListener('click', function() {
+            fetchAndCopyWordlistContent(wordlist.link, wordlist.name);
+        });
+        btnGroup.appendChild(copyContentBtn);
+    } 
+    // If wordlist has direct content
+    else if (wordlist.content) {
+        // View content button
+        const viewContentBtn = document.createElement('button');
+        viewContentBtn.className = 'btn btn-sm btn-primary';
+        viewContentBtn.innerHTML = '<i class="fas fa-eye"></i> View';
+        viewContentBtn.addEventListener('click', function() {
+            showContentModal(wordlist.name, wordlist.content);
+        });
+        btnGroup.appendChild(viewContentBtn);
+        
+        // Copy content button for direct content
+        const copyContentBtn = document.createElement('button');
+        copyContentBtn.className = 'btn btn-sm btn-success';
+        copyContentBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+        copyContentBtn.addEventListener('click', function() {
+            copyToClipboard(wordlist.content);
+        });
+        btnGroup.appendChild(copyContentBtn);
+    }
     
     // Add buttons to group and cell
-    btnGroup.appendChild(link);
-    btnGroup.appendChild(copyContentBtn);
     linkCell.appendChild(btnGroup);
     row.appendChild(linkCell);
     
     return row;
+}
+
+// Function to show a modal with wordlist content
+function showContentModal(title, content) {
+    // Check if modal container exists, create if not
+    let modalContainer = document.getElementById('content-modal-container');
+    if (!modalContainer) {
+        modalContainer = document.createElement('div');
+        modalContainer.id = 'content-modal-container';
+        document.body.appendChild(modalContainer);
+    }
+    
+    // Create modal HTML
+    modalContainer.innerHTML = `
+        <div class="modal fade" id="contentModal" tabindex="-1" aria-labelledby="contentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="contentModalLabel">${title}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <pre class="content-pre"><code>${escapeHtml(content)}</code></pre>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="copyModalContentBtn">
+                            <i class="fas fa-copy"></i> Copy Content
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Initialize the modal
+    const contentModal = new bootstrap.Modal(document.getElementById('contentModal'));
+    contentModal.show();
+    
+    // Add copy button functionality
+    document.getElementById('copyModalContentBtn').addEventListener('click', function() {
+        copyToClipboard(content);
+    });
+}
+
+// Helper function to escape HTML entities
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // Create a row for payload items (XSS, LFI, Command Injection, SQL Injection)
@@ -707,6 +782,27 @@ function performSearch(query) {
         item.name.toLowerCase().includes(query) || 
         item.description.toLowerCase().includes(query)
     );
+
+    // Windows and Linux privilege escalation
+    const matchingWindowsPrivesc = windowsPrivescData.filter(item => 
+        item.payload.toLowerCase().includes(query) || 
+        item.description.toLowerCase().includes(query)
+    );
+
+    const matchingWindowsPrivescResources = windowsPrivescResourcesData.filter(item => 
+        item.name.toLowerCase().includes(query) || 
+        item.description.toLowerCase().includes(query)
+    );
+
+    const matchingLinuxPrivesc = linuxPrivescData.filter(item => 
+        item.payload.toLowerCase().includes(query) || 
+        item.description.toLowerCase().includes(query)
+    );
+
+    const matchingLinuxPrivescResources = linuxPrivescResourcesData.filter(item => 
+        item.name.toLowerCase().includes(query) || 
+        item.description.toLowerCase().includes(query)
+    );
     
     // Update tables with matched results
     populateTable('wordlists-table', matchingWordlists, createWordlistRow);
@@ -735,33 +831,58 @@ function performSearch(query) {
     populateTable('sql-table', matchingSql, createPayloadRow);
     populateTable('regex-table', matchingRegex, createRegexRow);
     populateTable('resources-table', matchingResources, createResourceRow);
+    populateTable('windows-privesc-table', matchingWindowsPrivesc, createPayloadRow);
+    populateTable('windows-privesc-resources-table', matchingWindowsPrivescResources, createResourceRow);
+    populateTable('linux-privesc-table', matchingLinuxPrivesc, createPayloadRow);
+    populateTable('linux-privesc-resources-table', matchingLinuxPrivescResources, createResourceRow);
+    
+    // Define sections and their matching results
+    const sections = [
+        { id: 'wordlists', results: matchingWordlists },
+        { id: 'xss', results: [
+            ...matchingXssBasic, ...matchingXssTags, ...matchingXssAttributes, 
+            ...matchingXssEncoded, ...matchingXssDom, ...matchingXssEvasion,
+            ...matchingXssEvents, ...matchingXssWaf, ...matchingXssPolyglots,
+            ...matchingXssContext, ...matchingXssBrowser, ...matchingXssCss,
+            ...matchingXssHtmlSpecific, ...matchingXssAngular
+        ]},
+        { id: 'html-payloads', results: matchingHtmlPayloads },
+        { id: 'lfi', results: matchingLfi },
+        { id: 'cmd-injection', results: matchingCmd },
+        { id: 'sql-injection', results: matchingSql },
+        { id: 'regex', results: matchingRegex },
+        { id: 'resources', results: matchingResources },
+        { id: 'windows-privesc', results: [...matchingWindowsPrivesc, ...matchingWindowsPrivescResources] },
+        { id: 'linux-privesc', results: [...matchingLinuxPrivesc, ...matchingLinuxPrivescResources] }
+    ];
+    
+    // Hide sections with no matches
+    sections.forEach(section => {
+        const sectionEl = document.getElementById(section.id);
+        if (sectionEl) {
+            if (section.results.length === 0) {
+                sectionEl.classList.add('d-none');
+            } else {
+                sectionEl.classList.remove('d-none');
+            }
+        }
+    });
     
     // Show no results message if no matches found
-    const totalResults = matchingWordlists.length + 
-                         matchingXssBasic.length + matchingXssTags.length + 
-                         matchingXssAttributes.length + matchingXssEncoded.length +
-                         matchingXssDom.length + matchingXssEvasion.length +
-                         matchingXssEvents.length + matchingXssWaf.length +
-                         matchingXssPolyglots.length + matchingXssContext.length +
-                         matchingXssBrowser.length + matchingXssCss.length +
-                         matchingXssHtmlSpecific.length + matchingXssAngular.length +
-                         matchingHtmlPayloads.length +
-                         matchingLfi.length + matchingCmd.length + 
-                         matchingSql.length + matchingRegex.length + 
-                         matchingResources.length;
+    const totalResults = sections.reduce((sum, section) => sum + section.results.length, 0);
     
     if (totalResults === 0) {
         showNoResultsMessage();
     } else {
         // If any XSS results found, highlight the tab with results
         const xssTabHasResults = matchingXssBasic.length > 0 || matchingXssTags.length > 0 || 
-                                 matchingXssAttributes.length > 0 || matchingXssEncoded.length > 0 ||
-                                 matchingXssDom.length > 0 || matchingXssEvasion.length > 0 ||
-                                 matchingXssEvents.length > 0 || matchingXssWaf.length > 0 ||
-                                 matchingXssPolyglots.length > 0 || matchingXssContext.length > 0 ||
-                                 matchingXssBrowser.length > 0 || matchingXssCss.length > 0 ||
-                                 matchingXssHtmlSpecific.length > 0 || matchingXssAngular.length > 0;
-                                 
+                                matchingXssAttributes.length > 0 || matchingXssEncoded.length > 0 ||
+                                matchingXssDom.length > 0 || matchingXssEvasion.length > 0 ||
+                                matchingXssEvents.length > 0 || matchingXssWaf.length > 0 ||
+                                matchingXssPolyglots.length > 0 || matchingXssContext.length > 0 ||
+                                matchingXssBrowser.length > 0 || matchingXssCss.length > 0 ||
+                                matchingXssHtmlSpecific.length > 0 || matchingXssAngular.length > 0;
+                                
         if (xssTabHasResults) {
             // Activate the first tab that has results
             const tabsToCheck = [
@@ -786,6 +907,20 @@ function performSearch(query) {
                     document.getElementById(tab.id).click();
                     break;
                 }
+            }
+        }
+
+        // Add a summary indicator showing search is filtered
+        const searchInput = document.getElementById('search-input');
+        if (searchInput && searchInput.nextElementSibling && searchInput.nextElementSibling.nextElementSibling) {
+            let clearSearchButton = document.getElementById('clear-search-button');
+            if (clearSearchButton) {
+                clearSearchButton.classList.remove('d-none');
+                clearSearchButton.addEventListener('click', function() {
+                    searchInput.value = '';
+                    resetSearch();
+                    this.classList.add('d-none');
+                });
             }
         }
     }
@@ -1541,5 +1676,53 @@ function simulateTouchHover() {
         element.addEventListener('touchcancel', function() {
             this.classList.remove('touch-hover');
         });
+    });
+}
+
+// Initialize tab persistence to remember last active tab
+function initializeTabPersistence() {
+    // Set up tab click handler to save active tab state
+    document.querySelectorAll('.nav-tabs .nav-link').forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Get the parent tab container to identify which section this belongs to
+            const tabContainer = this.closest('.nav-tabs');
+            if (!tabContainer || !tabContainer.id) return;
+            
+            // Get section ID from the tab container or its parent
+            const sectionId = tabContainer.dataset.section || 
+                             tabContainer.closest('section')?.id || 
+                             tabContainer.closest('.card')?.closest('section')?.id;
+            
+            if (sectionId) {
+                // Save the active tab ID for this section
+                localStorage.setItem(`activeTab-${sectionId}`, this.id);
+            }
+        });
+    });
+    
+    // Restore active tabs for each section
+    document.querySelectorAll('section').forEach(section => {
+        if (!section.id) return;
+        
+        const savedTabId = localStorage.getItem(`activeTab-${section.id}`);
+        if (savedTabId) {
+            const savedTab = document.getElementById(savedTabId);
+            if (savedTab) {
+                // Delay slightly to ensure tabs are initialized
+                setTimeout(() => {
+                    // Use bootstrap's tab API to show the saved tab
+                    const bsTab = new bootstrap.Tab(savedTab);
+                    bsTab.show();
+                }, 50);
+            }
+        }
+    });
+    
+    // Set data-section attribute on tab containers for easier reference
+    document.querySelectorAll('.nav-tabs').forEach(tabList => {
+        const sectionEl = tabList.closest('section');
+        if (sectionEl && sectionEl.id) {
+            tabList.dataset.section = sectionEl.id;
+        }
     });
 }
