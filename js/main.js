@@ -1416,104 +1416,22 @@ function clearAllFavorites() {
     }
 }
 
-// Initialize recent payloads tracking
-function initializeRecentPayloads() {
-    // Create recent payloads container if it doesn't exist
-    if (!document.getElementById('recent-payloads-container')) {
-        const mainContent = document.querySelector('.container-fluid') || document.querySelector('.container');
-        if (!mainContent) return;
-        
-        const recentSection = document.createElement('div');
-        recentSection.id = 'recent-payloads-container';
-        recentSection.className = 'recent-payloads d-none';
-        recentSection.innerHTML = `
-            <h5><i class="fas fa-history"></i> Recently Used Payloads</h5>
-            <div id="recent-payloads-list" class="d-flex flex-wrap gap-2 my-2"></div>
-        `;
-        
-        // Insert before content but after search
-        const searchRow = document.querySelector('.row:has(#search-input)');
-        if (searchRow && searchRow.nextSibling) {
-            mainContent.insertBefore(recentSection, searchRow.nextSibling);
-        } else {
-            mainContent.insertBefore(recentSection, mainContent.firstChild);
-        }
-    }
-    
-    // Load recent payloads
-    loadRecentPayloads();
-}
-
 // Track payload usage for recent payloads feature
 function trackRecentPayload(payload) {
-    if (!payload) return;
-    
-    let recentPayloads = JSON.parse(localStorage.getItem('recentPayloads') || '[]');
-    
-    // Remove if already exists
-    recentPayloads = recentPayloads.filter(item => item.payload !== payload);
-    
-    // Add to beginning
-    recentPayloads.unshift({
-        payload: payload,
-        timestamp: new Date().toISOString()
-    });
-    
-    // Keep only latest 10
-    recentPayloads = recentPayloads.slice(0, 10);
-    
-    // Save to localStorage
-    localStorage.setItem('recentPayloads', JSON.stringify(recentPayloads));
-    
-    // Update display
-    loadRecentPayloads();
+    // Function disabled - Recently Used Payloads feature removed
+    return;
 }
 
 // Load and display recent payloads
 function loadRecentPayloads() {
-    const recentList = document.getElementById('recent-payloads-list');
-    const recentContainer = document.getElementById('recent-payloads-container');
-    
-    if (!recentList || !recentContainer) return;
-    
-    const recentPayloads = JSON.parse(localStorage.getItem('recentPayloads') || '[]');
-    
-    // Show or hide based on content
-    if (recentPayloads.length === 0) {
-        recentContainer.classList.add('d-none');
-        return;
-    } else {
-        recentContainer.classList.remove('d-none');
-    }
-    
-    // Clear existing items
-    recentList.innerHTML = '';
-    
-    // Add each recent payload
-    recentPayloads.forEach(item => {
-        const payloadItem = document.createElement('div');
-        payloadItem.className = 'badge bg-light text-dark d-flex align-items-center';
-        payloadItem.style.cursor = 'pointer';
-        
-        // Truncate long payloads
-        const displayText = item.payload.length > 30 
-            ? item.payload.substring(0, 30) + '...' 
-            : item.payload;
-        
-        payloadItem.innerHTML = `
-            <span title="${item.payload}">${displayText}</span>
-            <button class="btn btn-sm ms-2 p-0 border-0">
-                <i class="fas fa-copy text-primary"></i>
-            </button>
-        `;
-        
-        // Make the whole badge clickable to copy
-        payloadItem.addEventListener('click', function() {
-            copyToClipboard(item.payload);
-        });
-        
-        recentList.appendChild(payloadItem);
-    });
+    // Function disabled - Recently Used Payloads feature removed
+    return;
+}
+
+// Initialize recent payloads tracking
+function initializeRecentPayloads() {
+    // Function disabled - Recently Used Payloads feature removed
+    return;
 }
 
 // Show skeleton loaders during initial data load
