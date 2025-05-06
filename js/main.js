@@ -81,6 +81,7 @@ function initializePage() {
     populateTable('lfi-table', lfiData, createPayloadRow);
     populateTable('cmd-table', cmdInjectionData, createPayloadRow);
     populateTable('sql-table', sqlInjectionData, createPayloadRow);
+    populateTable('csv-table', csvInjectionData, createPayloadRow);
     populateTable('regex-table', regexData, createRegexRow);
     populateTable('resources-table', resourcesData, createResourceRow);
     
