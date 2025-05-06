@@ -14,14 +14,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header class="bg-dark text-white py-3">
+    <header class="py-3" style="background-color: var(--primary-color);">
         <div class="container">
-            <h1 class="text-center">Pentest Arsenal</h1>
-            <p class="text-center">All-in-one security testing resources</p>
+            <h1 class="text-center text-white">Pentest Arsenal</h1>
+            <p class="text-center text-white">All-in-one security testing resources</p>
         </div>
     </header>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--secondary-color);">
         <div class="container">
             <a class="navbar-brand d-lg-none" href="#">Security</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -607,6 +607,31 @@
                                     </thead>
                                     <tbody id="sql-table">
                                         <!-- SQL injection payloads will be loaded here by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="csv-injection" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h2>CSV Injection Payloads</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>CSV (Comma-Separated Values) injection payloads for exploiting formula injection vulnerabilities in spreadsheet applications.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Payload</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="csv-table">
+                                        <!-- CSV injection payloads will be loaded here by JavaScript -->
                                     </tbody>
                                 </table>
                             </div>
