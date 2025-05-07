@@ -601,9 +601,53 @@ const resourcesData = [
         link: "https://portswigger.net/web-security"
     },
     {
-        name:"Exploit Notes",
+        name: "Exploit Notes",
         description: "A collection of notes and resources for various exploits",
         link: "https://exploit-notes.hdks.org/"
+    },
+    {
+        name: "CTF Search",
+        description: "Advanced search engine for CTF challenges and writeups",
+        link: "https://ctfsearch.hackmap.win/"   
+    }
+];
+
+// OSINT Resources data
+const osintResourcesData = [
+    {
+        name: "OSINT Framework",
+        description: "Collection of OSINT tools categorized by resource type",
+        link: "https://osintframework.com/"
+    },
+    {
+        name: "IntelTechniques Tools",
+        description: "Michael Bazzell's OSINT tools for various intelligence gathering tasks",
+        link: "https://inteltechniques.com/tools/"
+    },
+    {
+        name: "Maltego (Paterva)",
+        description: "Visual link analysis tool for discovering connections between pieces of information",
+        link: "https://www.paterva.com/"
+    },
+    {
+        name: "SpiderFoot",
+        description: "Open source intelligence automation tool for OSINT collection and reconnaissance",
+        link: "https://www.spiderfoot.net/"
+    },
+    {
+        name: "PhoneInfoga",
+        description: "Advanced phone number scanner and information gathering tool",
+        link: "https://github.com/sundowndev/phoneinfoga"
+    },
+    {
+        name: "Recon-ng",
+        description: "Web reconnaissance framework with independent modules for targeted information gathering",
+        link: "https://github.com/lanmaster53/recon-ng"
+    },
+    {
+        name: "GHunt",
+        description: "OSINT tool to extract information from Google accounts using public information",
+        link: "https://github.com/mxrch/GHunt"
     }
 ];
 
