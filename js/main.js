@@ -91,6 +91,9 @@ function initializePage() {
     populateTable('linux-privesc-table', linuxPrivescData, createPayloadRow);
     populateTable('linux-privesc-resources-table', linuxPrivescResourcesData, createResourceRow);
     
+    // Populate OSINT resources table
+    populateTable('osint-table', osintResourcesData, createResourceRow);
+    
     // Create the notification element for copy operations
     createCopyNotification();
     
