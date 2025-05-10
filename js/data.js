@@ -530,7 +530,54 @@ const xssData = {
             payload: "<script>Object.defineProperties(window, {chromium: {value: 1}});</script><div ng-app>{{constructor.constructor('alert(1)')()}}</div>",
             description: "AngularJS sandbox escape with Object.defineProperties"
         }
-    ]
+    ],
+    // New XSS Encode Methods Section
+    encodeMethods: {
+        encodePayload: function(userput, method) {
+            switch(method) {
+                case 'html':
+                    return userput.replace(/&/g, '&amp;')
+                                .replace(/</g, '&lt;')
+                                .replace(/>/g, '&gt;')
+                                .replace(/"/g, '&quot;')
+                                .replace(/'/g, '&#x27;');
+                case 'url':
+                    return encodeURIComponent(userput);
+                case 'base64':
+                    return btoa(userput);
+                case 'hex':
+                    return Array.from(userput).map(c => 
+                        '\\x' + c.charCodeAt(0).toString(16).padStart(2, '0')
+                    ).join('');
+                case 'decimal':
+                    return Array.from(userput).map(c => 
+                        '&#' + c.charCodeAt(0) + ';'
+                    ).join('');
+                case 'js_escape':
+                    return userput.replace(/[\\'"]/g, '\\$&');
+                case 'unicode':
+                    return Array.from(userput).map(c => 
+                        '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')
+                    ).join('');
+                case 'js_unicode':
+                    return Array.from(userput).map(c => 
+                        '\\u{' + c.charCodeAt(0).toString(16) + '}'
+                    ).join('');
+                default:
+                    return userput; // Return unchanged if method not recognized
+            }
+        },
+        getAllEncodings: function(userput) {
+            const methods = ['html', 'url', 'base64', 'hex', 'decimal', 'js_escape', 'unicode', 'js_unicode'];
+            const result = {};
+            
+            methods.forEach(method => {
+                result[method] = this.encodePayload(userput, method);
+            });
+            
+            return result;
+        }
+    }
 };
 
 // Regex Patterns data
@@ -976,3 +1023,334 @@ const csvInjectionData = [
         description: "CSV formula with command execution disguised as calculation"
     }
 ];
+
+// AWS Cloud Security CLI Commands
+const awsSecurityCliData = [
+    {
+        command: "aws ec2 describe-security-groups",
+        description: "List all security groups and their inbound/outbound rules"
+    },
+    {
+        command: "aws iam list-users",
+        description: "List all IAM users in the AWS account"
+    },
+    {
+        command: "aws iam list-roles",
+        description: "List all IAM roles in the AWS account"
+    },
+    {
+        command: "aws iam get-account-password-policy",
+        description: "Get the account password policy details"
+    },
+    {
+        command: "aws s3api list-buckets",
+        description: "List all S3 buckets in the account"
+    },
+    {
+        command: "aws s3api get-bucket-policy --bucket bucket-name",
+        description: "View bucket policy for a specific S3 bucket"
+    },
+    {
+        command: "aws s3api get-bucket-acl --bucket bucket-name",
+        description: "View bucket ACLs for a specific S3 bucket"
+    },
+    {
+        command: "aws cloudtrail describe-trails",
+        description: "List all CloudTrail trails configured"
+    },
+    {
+        command: "aws kms list-keys",
+        description: "List all KMS keys in the account"
+    },
+    {
+        command: "aws guardduty list-detectors",
+        description: "List GuardDuty detectors for monitoring threats"
+    },
+    {
+        command: "aws config describe-configuration-recorders",
+        description: "View AWS Config recorders status for compliance monitoring"
+    },
+    {
+        command: "aws inspector list-assessment-templates",
+        description: "List Inspector assessment templates for vulnerability scanning"
+    }
+];
+
+// Azure Cloud Security CLI Commands
+const azureSecurityCliData = [
+    {
+        command: "az security alert list",
+        description: "List security alerts detected by Azure Security Center"
+    },
+    {
+        command: "az network nsg list",
+        description: "List all Network Security Groups"
+    },
+    {
+        command: "az network nsg rule list --nsg-name <nsg-name> -g <resource-group>",
+        description: "List all rules in a Network Security Group"
+    },
+    {
+        command: "az ad user list",
+        description: "List all users in Azure Active Directory"
+    },
+    {
+        command: "az role assignment list",
+        description: "List all role assignments in the subscription"
+    },
+    {
+        command: "az keyvault list",
+        description: "List all Key Vaults in the subscription"
+    },
+    {
+        command: "az storage account list",
+        description: "List all storage accounts in the subscription"
+    },
+    {
+        command: "az storage account show-connection-string --name <storage-name> -g <resource-group>",
+        description: "Get connection string for a storage account"
+    },
+    {
+        command: "az monitor activity-log list --start-time <start-time>",
+        description: "List activity logs for a specific time period"
+    },
+    {
+        command: "az policy assignment list",
+        description: "List all policy assignments in the subscription"
+    },
+    {
+        command: "az vm list",
+        description: "List all virtual machines in the subscription"
+    },
+    {
+        command: "az disk list",
+        description: "List all managed disks in the subscription"
+    }
+];
+
+// GCP Cloud Security CLI Commands
+const gcpSecurityCliData = [
+    {
+        command: "gcloud projects get-iam-policy <project-id>",
+        description: "List IAM policies for a specific project"
+    },
+    {
+        command: "gcloud compute firewall-rules list",
+        description: "List all firewall rules in the project"
+    },
+    {
+        command: "gcloud compute networks list",
+        description: "List all VPC networks in the project"
+    },
+    {
+        command: "gcloud compute instances list",
+        description: "List all VM instances in the project"
+    },
+    {
+        command: "gcloud storage ls",
+        description: "List all storage buckets in the project"
+    },
+    {
+        command: "gcloud storage ls gs://<bucket-name> -r",
+        description: "List all objects in a specific bucket recursively"
+    },
+    {
+        command: "gcloud iam service-accounts list",
+        description: "List all service accounts in the project"
+    },
+    {
+        command: "gcloud logging logs list",
+        description: "List all logs available in Cloud Logging"
+    },
+    {
+        command: "gcloud kms keys list --keyring=<keyring-name> --location=<location>",
+        description: "List all keys in a specific keyring"
+    },
+    {
+        command: "gcloud container clusters list",
+        description: "List all GKE clusters in the project"
+    },
+    {
+        command: "gcloud sql instances list",
+        description: "List all Cloud SQL instances in the project"
+    },
+    {
+        command: "gcloud services list --enabled",
+        description: "List all enabled APIs in the project"
+    }
+];
+
+// Cloud Security Data
+const cloudSecurityData = {
+    aws: {
+        tools: [
+            {
+                name: "Pacu",
+                description: "AWS exploitation framework",
+                link: "https://github.com/RhinoSecurityLabs/pacu"
+            },
+            {
+                name: "ScoutSuite",
+                description: "Multi-cloud security auditing tool",
+                link: "https://github.com/nccgroup/ScoutSuite"
+            },
+            {
+                name: "Prowler",
+                description: "AWS CIS Benchmark tool",
+                link: "https://github.com/prowler-cloud/prowler"
+            },
+            {
+                name: "S3Scanner",
+                description: "S3 bucket scanning",
+                link: "https://github.com/sa7mon/S3Scanner"
+            },
+            {
+                name: "CloudSploit",
+                description: "Cloud security configuration scanner",
+                link: "https://github.com/aquasecurity/cloudsploit"
+            }
+        ],
+        privEscTechniques: [
+            {
+                misconfiguration: "IAM User Keys",
+                description: "Exposed IAM user access keys",
+                detectionMethod: "aws iam list-access-keys --user-name [username]"
+            },
+            {
+                misconfiguration: "IAM Role Trust Policies",
+                description: "Overly permissive trust relationships",
+                detectionMethod: "aws iam list-roles | grep RoleName"
+            },
+            {
+                misconfiguration: "EC2 Instance Profile",
+                description: "Over-privileged EC2 instance profiles",
+                detectionMethod: "aws iam list-instance-profiles"
+            },
+            {
+                misconfiguration: "S3 Bucket Policies",
+                description: "Permissive bucket policies",
+                detectionMethod: "aws s3api get-bucket-policy --bucket [bucket-name]"
+            },
+            {
+                misconfiguration: "Lambda Policies",
+                description: "Excessive Lambda function permissions",
+                detectionMethod: "aws lambda get-policy --function-name [function-name]"
+            }
+        ],
+        cliCommands: awsSecurityCliData
+    },
+    azure: {
+        tools: [
+            {
+                name: "MicroBurst",
+                description: "Azure security assessment toolkit",
+                link: "https://github.com/NetSPI/MicroBurst"
+            },
+            {
+                name: "Azure Hunter",
+                description: "Azure environment assessment tool",
+                link: "https://github.com/darkquasar/AzureHunter" 
+            },
+            {
+                name: "Stormspotter",
+                description: "Azure environment visualization",
+                link: "https://github.com/Azure/Stormspotter"
+            },
+            {
+                name: "ScoutSuite",
+                description: "Multi-cloud security auditing tool",
+                link: "https://github.com/nccgroup/ScoutSuite"
+            },
+            {
+                name: "ROADtools",
+                description: "Azure AD assessment framework",
+                link: "https://github.com/dirkjanm/ROADtools"
+            }
+        ],
+        privEscTechniques: [
+            {
+                misconfiguration: "Azure AD Roles",
+                description: "Over-permissive role assignments",
+                detectionMethod: "Get-AzRoleAssignment"
+            },
+            {
+                misconfiguration: "Managed Identities",
+                description: "VM with privileged managed identity",
+                detectionMethod: "az vm identity show --name [vm-name] --resource-group [resource-group]"
+            },
+            {
+                misconfiguration: "Key Vault Access",
+                description: "Excessive Key Vault access policies",
+                detectionMethod: "az keyvault show --name [keyvault-name]"
+            },
+            {
+                misconfiguration: "Service Principal Permissions",
+                description: "Over-provisioned service principals",
+                detectionMethod: "az ad sp list --show-mine"
+            },
+            {
+                misconfiguration: "Storage Account SAS",
+                description: "Overly permissive SAS tokens",
+                detectionMethod: "az storage account keys list --account-name [name]"
+            }
+        ],
+        cliCommands: azureSecurityCliData
+    },
+    gcp: {
+        tools: [
+            {
+                name: "GCP Scanner",
+                description: "Scanner for GCP resources",
+                link: "https://github.com/google/gcp_scanner"
+            },
+            {
+                name: "GCPBucketBrute",
+                description: "GCP storage bucket enumeration",
+                link: "https://github.com/RhinoSecurityLabs/GCPBucketBrute"
+            },
+            {
+                name: "ScoutSuite",
+                description: "Multi-cloud security auditing tool",
+                link: "https://github.com/nccgroup/ScoutSuite"
+            },
+            {
+                name: "Forseti Security",
+                description: "GCP security monitoring tool",
+                link: "https://github.com/forseti-security/forseti-security"
+            },
+            {
+                name: "GCP IAM Recommender",
+                description: "Permissions management tool",
+                link: "https://cloud.google.com/iam/docs/recommender"
+            }
+        ],
+        privEscTechniques: [
+            {
+                misconfiguration: "Service Account Roles",
+                description: "Over-permissive service account roles",
+                detectionMethod: "gcloud projects get-iam-policy [project-id]"
+            },
+            {
+                misconfiguration: "Custom Roles",
+                description: "Custom roles with excessive permissions",
+                detectionMethod: "gcloud iam roles list --project=[project-id]"
+            },
+            {
+                misconfiguration: "Service Account Keys",
+                description: "Exposed service account keys",
+                detectionMethod: "gcloud iam service-accounts keys list --iam-account=[account]"
+            },
+            {
+                misconfiguration: "Compute Instance Metadata",
+                description: "Access to compute instance metadata",
+                detectionMethod: "curl -H \"Metadata-Flavor: Google\" 'http://metadata.google.internal/computeMetadata/v1/instance/'"
+            },
+            {
+                misconfiguration: "Cloud Storage ACLs",
+                description: "Permissive bucket ACLs",
+                detectionMethod: "gsutil iam get gs://[bucket-name]"
+            }
+        ],
+        cliCommands: gcpSecurityCliData
+    }
+};
