@@ -1,7 +1,7 @@
 // Main JavaScript for Security Payload Repository
 
 // Application version
-const APP_VERSION = 'v1.0.0';
+const APP_VERSION = 'v2.0.0';
 
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
