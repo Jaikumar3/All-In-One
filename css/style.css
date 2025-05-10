@@ -233,6 +233,8 @@ main {
 }
 
 /* Payload display */
+
+/* Payload display */
 .payload-text {
     font-family: 'Courier New', Courier, monospace;
     background-color: var(--code-bg);
@@ -268,6 +270,53 @@ pre.code-block {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1020;
     display: none;
+}
+
+/* General notification styling */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1030;
+    display: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    font-size: 0.95rem;
+    max-width: 350px;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Notification types */
+.notification-info {
+    background-color: #0dcaf0;
+    color: #fff;
+}
+
+.notification-success {
+    background-color: #198754;
+    color: #fff;
+}
+
+.notification-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.notification-error {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.notification i {
+    margin-right: 8px;
 }
 
 /* Improved tab navigation */
@@ -468,105 +517,108 @@ pre.code-block {
     background-color: var(--code-bg);
 }
 
-/* Search Results Panel */
-.search-results-panel {
-    position: fixed;
-    top: 70px;
-    left: 0;
-    right: 0;
-    z-index: 1020;
-    padding: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    max-height: 80vh;
+/* Search suggestions styling */
+.search-suggestions-container {
+    max-height: 300px;
     overflow-y: auto;
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0 0 0.25rem 0.25rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    z-index: 1050;
+    animation: fadeIn 0.2s ease-in-out;
 }
 
-.search-results-panel.d-none {
-    opacity: 0;
-    transform: translateY(-20px);
-    pointer-events: none;
-}
-
-.search-results-panel .card {
+.search-suggestions-container .list-group {
     margin-bottom: 0;
+    border-radius: 0;
 }
 
-.search-results-container {
-    max-height: 60vh;
-    overflow-y: auto;
-}
-
-.search-category {
-    margin-bottom: 15px;
-}
-
-.search-category h6 {
-    font-weight: 600;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.search-result-item {
-    padding: 8px;
-    border-radius: 4px;
-    transition: background-color 0.2s;
+.suggestion-item {
     cursor: pointer;
-    margin-bottom: 5px;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease;
 }
 
-.search-result-item:hover {
-    background-color: rgba(0, 123, 255, 0.1);
+.suggestion-item:hover, .suggestion-item.focused {
+    background-color: rgba(0, 123, 255, 0.1) !important;
 }
 
-.search-result-payload {
-    font-family: monospace;
-    background-color: rgba(0, 0, 0, 0.05);
-    padding: 4px;
-    border-radius: 3px;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.search-result-description {
-    font-size: 0.85em;
-    opacity: 0.8;
-    margin-top: 3px;
-}
-
-.search-result-meta {
-    font-size: 0.75em;
-    opacity: 0.6;
-    margin-top: 3px;
-}
-
-.search-count {
-    font-weight: bold;
-}
-
-.search-highlight {
-    background-color: rgba(255, 255, 0, 0.3);
-    font-weight: 500;
+.suggestion-item mark {
+    background-color: rgba(255, 235, 59, 0.6);
+    padding: 0.1em 0;
     border-radius: 2px;
-    padding: 0 2px;
 }
 
-/* Animation for search results */
-@keyframes fadeInResults {
+.suggestion-text {
+    font-family: monospace;
+    word-break: word-break;
+}
+
+/* Search history styling */
+.search-history-item {
+    transition: all 0.2s ease;
+}
+
+.search-history-query {
+    font-weight: 500;
+}
+
+.remove-history-item {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.remove-history-item:hover {
+    opacity: 1;
+}
+
+/* Dark mode support for search suggestions and history */
+[data-bs-theme="dark"] .search-suggestions-container {
+    border-color: rgba(255, 255, 255, 0.15);
+    background-color: #343a40;
+}
+
+[data-bs-theme="dark"] .suggestion-item {
+    color: #fff;
+    background-color: #343a40;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+[data-bs-theme="dark"] .suggestion-item:hover,
+[data-bs-theme="dark"] .suggestion-item.focused {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Keyboard navigation indicator */
+.keyboard-nav-hint {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1060;
+}
+
+.keyboard-nav-hint.visible {
+    opacity: 1;
+}
+
+/* Animation for search updates */
+@keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-5px);
     }
     to {
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.search-result-item {
-    animation: fadeInResults 0.2s ease-out forwards;
 }
 
 /* Clear search button style */
@@ -777,6 +829,20 @@ pre.code-block {
         position: relative;
         width: 100%;
     }
+    
+    #payload-to-encode {
+        min-height: 60px;
+    }
+    
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        margin-bottom: 5px;
+        width: 100%;
+    }
 }
 
 @media (max-width: 576px) {
@@ -885,318 +951,43 @@ pre.code-block {
     body {
         font-size: 0.875rem;
     }
-    
-    .table td, .table th {
+      .table td, .table th {
         padding: 8px 4px;
-        font-size: 0.8rem;
-    }
-    
-    .btn {
-        padding: 6px 10px;
-        font-size: 0.875rem;
-    }
-    
-    .card-body {
-        padding: 12px 8px;
-    }
-    
-    /* Ensure payload text is properly contained in small screens */
-    .payload-text {
-        font-size: 0.75rem;
-        padding: 4px;
-        overflow-wrap: break-word;
-        word-break: break-word;
-        hyphens: auto;
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-    }
-    
-    /* Further optimize table layout for tiny screens */
-    .table th:nth-child(1), .table td:nth-child(1) {
-        width: 40%;
-    }
-    
-    .table th:nth-child(2), .table td:nth-child(2) {
-        width: 35%;
-    }
-    
-    .table th:nth-child(3), .table td:nth-child(3) {
-        width: 25%;
-    }
-    
-    /* Better fit for small screens */
-    .container {
-        padding-left: 8px;
-        padding-right: 8px;
-    }
-    
-    /* Improve interaction on tiny screens */
-    .btn-sm {
-        padding: 4px 8px;
-        font-size: 0.75rem;
     }
 }
 
-/* Additional mobile fixes for very small devices */
-@media (max-width: 375px) {
-    body {
-        font-size: 0.875rem;
-    }
-    
-    .table td, .table th {
-        padding: 8px 4px;
-        font-size: 0.8rem;
-    }
-    
-    .btn {
-        padding: 6px 10px;
-        font-size: 0.875rem;
-    }
-    
-    .card-body {
-        padding: 12px 8px;
-    }
-    
-    /* Ensure payload text is properly contained in small screens */
-    .payload-text {
-        font-size: 0.75rem;
-        padding: 4px;
-        overflow-wrap: break-word;
-        word-break: break-word;
-        hyphens: auto;
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-    }
-    
-    /* Further optimize table layout for tiny screens */
-    .table th:nth-child(1), .table td:nth-child(1) {
-        width: 40%;
-    }
-    
-    .table th:nth-child(2), .table td:nth-child(2) {
-        width: 35%;
-    }
-    
-    .table th:nth-child(3), .table td:nth-child(3) {
-        width: 25%;
-    }
-    
-    /* Better fit for small screens */
-    .container {
-        padding-left: 8px;
-        padding-right: 8px;
-    }
-    
-    /* Improve interaction on tiny screens */
-    .btn-sm {
-        padding: 4px 8px;
-        font-size: 0.75rem;
-    }
+/* XSS Encoder specific styles */
+.btn-group .dropdown-menu {
+    margin-top: 0.25rem;
 }
 
-/* Fix for iOS devices to ensure proper rendering */
-@supports (-webkit-touch-callout: none) {
-    /* CSS specific to iOS devices */
-    .btn, .nav-link, select, input {
-        -webkit-tap-highlight-color: transparent;
-    }
-    
-    /* Fix for 100vh issue on iOS */
-    .min-vh-100 {
-        min-height: -webkit-fill-available;
-    }
-    
-    /* Fix for Safari mobile bounce effect */
-    body {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        overflow-y: scroll;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    /* Fix for input focusing on iOS */
-    input, select, textarea {
-        font-size: 16px !important;
-    }
+#encoded-results-table .payload-text {
+    max-width: 500px;
+    display: block;
+    overflow-x: auto;
+    word-wrap: break-word;
 }
 
-/* Animation for copy notification */
-@keyframes fadeInOut {
-    0% { opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { opacity: 0; }
+/* Style for encoder tab */
+#encoder .card {
+    border: none;
+    box-shadow: none;
 }
 
-.fade-in-out {
-    animation: fadeInOut 2s ease-in-out;
+/* Make the textarea more prominent */
+#payload-to-encode {
+    resize: vertical;
+    min-height: 80px;
+    font-family: monospace;
 }
 
-/* External link styling */
-a.external-link {
-    color: #0d6efd;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
+/* Action buttons in the payload rows */
+.btn-group .btn-sm {
+    margin-right: 2px;
 }
 
-a.external-link:hover {
-    text-decoration: underline;
-}
-
-/* Enhanced mobile navigation */
-@media (max-width: 768px) {
-    /* Make navbar items larger and easier to tap */
-    .navbar-nav .nav-link {
-        padding: 12px 15px;
-        margin: 2px 0;
-        border-radius: 4px;
-    }
-    
-    /* Improved navbar collapse behavior */
-    .navbar-collapse {
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-    
-    /* Better handling of long tab lists on mobile */
-    .nav-tabs {
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
-    }
-    
-    .nav-tabs .nav-link {
-        scroll-snap-align: start;
-        min-width: 120px;
-        text-align: center;
-    }
-    
-    /* Ensure tables are fully responsive */
-    .table-responsive {
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-x: contain;
-    }
-    
-    /* Better spacing for sections */
-    section {
-        margin-bottom: 2rem;
-    }
-    
-    /* Improve form controls for touch */
-    input, select, textarea {
-        font-size: 16px !important; /* Prevents iOS zoom on focus */
-    }
-    
-    /* Make cards more touch-friendly */
-    .card {
-        margin-bottom: 1rem;
-    }
-    
-    /* Fix for modals on mobile */
-    .modal-dialog {
-        margin: 0.5rem;
-    }
-}
-
-/* Landscape orientation specific fixes for mobile */
-@media (max-width: 768px) and (orientation: landscape) {
-    .navbar-collapse {
-        max-height: 60vh;
-    }
-    
-    .container {
-        max-width: 100%;
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-    
-    /* Adjust headers for landscape */
-    h1 {
-        font-size: 1.6rem;
-    }
-    
-    /* Allow more horizontal space in landscape */
-    .table th:nth-child(1), .table td:nth-child(1) {
-        width: 35%;
-    }
-    
-    .table th:nth-child(2), .table td:nth-child(2) {
-        width: 45%;
-    }
-    
-    .table th:nth-child(3), .table td:nth-child(3) {
-        width: 20%;
-    }
-    
-    /* Better spacing for landscape orientation */
-    .container {
-        max-width: 100%;
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-    
-    /* Fix navbar in landscape mode */
-    .navbar-collapse {
-        max-height: 70vh;
-        overflow-y: auto;
-    }
-    
-    /* Adjust button size for landscape */
-    .btn {
-        padding: 6px 12px;
-        min-height: 38px; /* Smaller than portrait but still touchable */
-    }
-}
-
-/* Styles for screens with notches */
-@supports (padding-top: env(safe-area-inset-top)) {
-    .navbar {
-        padding-top: env(safe-area-inset-top);
-        padding-left: env(safe-area-inset-left);
-        padding-right: env(safe-area-inset-right);
-    }
-    
-    .fixed-bottom {
-        padding-bottom: env(safe-area-inset-bottom);
-    }
-}
-
-/* Optimize performance during scrolling */
-.is-scrolling .card {
-    will-change: transform;
-}
-
-.is-scrolling .payload-text {
-    will-change: contents;
-}
-
-/* Content modal styles */
-.content-pre {
-    max-height: 70vh;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    word-break: break-word;
-    background-color: #f8f9fa;
-    padding: 1rem;
-    border-radius: 0.25rem;
-}
-
-[data-bs-theme="dark"] .content-pre {
-    background-color: #212529;
-    color: #f8f9fa;
-}
-
-/* Make sure the modal displays on top of everything */
-.modal-backdrop {
-    z-index: 1040;
-}
-.modal {
-    z-index: 1045;
-}
-
-.modal-dialog-scrollable .modal-content {
-    max-height: 90vh;
+/* Highlight the copied button */
+.btn-copy.copied {
+    background-color: #198754;
+    color: white;
 }
