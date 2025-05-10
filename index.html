@@ -59,6 +59,19 @@
                         </ul>
                     </li>
                     
+                    <!-- Cloud Security Dropdown - NEW -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="cloudSecurityDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-cloud"></i> Cloud Security
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="cloudSecurityDropdown">
+                            <li><a class="dropdown-item" href="#cloud-security"></a></li>
+                            <li><a class="dropdown-item" href="#aws-security"><i class="fab fa-aws"></i> AWS Security</a></li>
+                            <li><a class="dropdown-item" href="#azure-security"><i class="fab fa-microsoft"></i> Azure Security</a></li>
+                            <li><a class="dropdown-item" href="#gcp-security"><i class="fab fa-google"></i> GCP Security</a></li>
+                        </ul>
+                    </li>
+                    
                     <!-- OSINT Link -->
                     <li class="nav-item">
                         <a class="nav-link" href="#osint"><i class="fas fa-search"></i> OSINT</a>
@@ -81,45 +94,13 @@
                         <a class="nav-link" href="#resources"><i class="fas fa-book"></i> Resources</a>
                     </li>
                 </ul>
-                <div class="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center mt-2 mt-lg-0">
-                    <div class="input-group mb-2 mb-lg-0" style="max-width: 300px;">
-                        <input type="text" id="search-input" class="form-control" placeholder="Search content..." aria-label="Search content" autocomplete="off">
-                        <button class="btn btn-light" id="search-button">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <button class="btn btn-light d-none" id="clear-search-button">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="theme-toggle ms-lg-2 mt-2 mt-lg-0 text-center" id="theme-toggle">
-                        <i class="fas fa-moon text-white"></i>
-                    </div>
-                </div>
+                <!-- Add Dark Mode Toggle Button -->
+                <button id="theme-toggle" class="btn btn-sm btn-dark ms-2">
+                    <i class="fas fa-moon text-white"></i>
+                </button>
             </div>
         </div>
     </nav>
-    
-    <!-- Fuzzy Search Results Panel -->
-    <div id="search-results-panel" class="search-results-panel d-none">
-        <div class="container">
-            <div class="card">
-                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-search me-2"></i>Search Results</h5>
-                    <button id="close-search-results" class="btn btn-sm btn-outline-light">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div id="search-summary" class="mb-3">
-                        <span id="search-count">0</span> results found for: <strong id="search-query"></strong>
-                    </div>
-                    <div id="search-results-container" class="search-results-container">
-                        <!-- Search results will be populated here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <main class="container-fluid py-4">
         <div class="row">
@@ -441,7 +422,7 @@
                             <h2>HTML Payloads</h2>
                         </div>
                         <div class="card-body">
-                            <p>HTML payloads and snippets for testing web applications (separate from XSS).</p>
+                            <p>HTML payloads and snippets for testing web applications.</p>
                             <div class="table-responsive">
                                 <table class="table table-striped">
                                     <thead>
@@ -747,6 +728,342 @@
                             </div>
                         </div>
                     </div>
+                </section>  
+                            
+                <!-- AWS Security Section -->
+                <section id="aws-security" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark">
+                            <h2><i class="fab fa-aws"></i> AWS Security</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Amazon Web Services security testing resources, tools, and CLI commands.</p>
+                            
+                            <!-- AWS Security Categories Tabs -->
+                            <ul class="nav nav-tabs mb-3" id="awsTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="aws-tools-tab" data-bs-toggle="tab" data-bs-target="#aws-tools" type="button" role="tab" aria-controls="aws-tools" aria-selected="true">Tools</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="aws-privesc-tab" data-bs-toggle="tab" data-bs-target="#aws-privesc" type="button" role="tab" aria-controls="aws-privesc" aria-selected="false">Privilege Escalation</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="aws-cli-tab" data-bs-toggle="tab" data-bs-target="#aws-cli" type="button" role="tab" aria-controls="aws-cli" aria-selected="false">CLI Commands</button>
+                                </li>
+                            </ul>
+                            
+                            <!-- AWS Tab Content -->
+                            <div class="tab-content" id="awsTabContent">
+                                <div class="tab-pane fade show active" id="aws-tools" role="tabpanel" aria-labelledby="aws-tools-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tool</th>
+                                                    <th>Description</th>
+                                                    <th>Link</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Pacu</td>
+                                                    <td>AWS exploitation framework</td>
+                                                    <td><a href="https://github.com/RhinoSecurityLabs/pacu" target="_blank" class="btn btn-sm btn-primary"><i class="fas fa-external-link-alt"></i> GitHub</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>ScoutSuite</td>
+                                                    <td>Multi-cloud security auditing tool</td>
+                                                    <td><a href="https://github.com/nccgroup/ScoutSuite" target="_blank" class="btn btn-sm btn-primary"><i class="fas fa-external-link-alt"></i> GitHub</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Prowler</td>
+                                                    <td>AWS CIS Benchmark tool</td>
+                                                    <td><a href="https://github.com/prowler-cloud/prowler" target="_blank" class="btn btn-sm btn-primary"><i class="fas fa-external-link-alt"></i> GitHub</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>S3Scanner</td>
+                                                    <td>S3 bucket scanning</td>
+                                                    <td><a href="https://github.com/sa7mon/S3Scanner" target="_blank" class="btn btn-sm btn-primary"><i class="fas fa-external-link-alt"></i> GitHub</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>CloudSploit</td>
+                                                    <td>Cloud security configuration scanner</td>
+                                                    <td><a href="https://github.com/aquasecurity/cloudsploit" target="_blank" class="btn btn-sm btn-primary"><i class="fas fa-external-link-alt"></i> GitHub</a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="aws-privesc" role="tabpanel" aria-labelledby="aws-privesc-tab">
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle"></i> <strong>Warning:</strong> These techniques are for educational purposes only. Use only in environments where you have proper authorization.
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Misconfiguration</th>
+                                                    <th>Description</th>
+                                                    <th>Detection Method</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>IAM User Keys</td>
+                                                    <td>Exposed IAM user access keys</td>
+                                                    <td><code>aws iam list-access-keys --user-name [username]</code></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>IAM Role Trust Policies</td>
+                                                    <td>Overly permissive trust relationships</td>
+                                                    <td><code>aws iam list-roles | grep RoleName</code></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>EC2 Instance Profile</td>
+                                                    <td>Over-privileged EC2 instance profiles</td>
+                                                    <td><code>aws iam list-instance-profiles</code></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>S3 Bucket Policies</td>
+                                                    <td>Permissive bucket policies</td>
+                                                    <td><code>aws s3api get-bucket-policy --bucket [bucket-name]</code></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Lambda Policies</td>
+                                                    <td>Excessive Lambda function permissions</td>
+                                                    <td><code>aws lambda get-policy --function-name [function-name]</code></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="aws-cli" role="tabpanel" aria-labelledby="aws-cli-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Command</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="aws-cli-table">
+                                                <!-- AWS CLI commands will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Azure Security Section -->
+                <section id="azure-security" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h2><i class="fab fa-microsoft"></i> Azure Security</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Microsoft Azure security testing resources, tools, and CLI commands.</p>
+                            
+                            <!-- Azure Security Categories Tabs -->
+                            <ul class="nav nav-tabs mb-3" id="azureTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="azure-tools-tab" data-bs-toggle="tab" data-bs-target="#azure-tools" type="button" role="tab" aria-controls="azure-tools" aria-selected="true">Tools</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="azure-privesc-tab" data-bs-toggle="tab" data-bs-target="#azure-privesc" type="button" role="tab" aria-controls="azure-privesc" aria-selected="false">Privilege Escalation</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="azure-cli-tab" data-bs-toggle="tab" data-bs-target="#azure-cli" type="button" role="tab" aria-controls="azure-cli" aria-selected="false">CLI Commands</button>
+                                </li>
+                            </ul>
+                            
+                            <!-- Azure Tab Content -->
+                            <div class="tab-content" id="azureTabContent">
+                                <div class="tab-pane fade show active" id="azure-tools" role="tabpanel" aria-labelledby="azure-tools-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tool</th>
+                                                    <th>Description</th>
+                                                    <th>Link</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="azure-tools-table">
+                                                <!-- Azure security tools will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="azure-privesc" role="tabpanel" aria-labelledby="azure-privesc-tab">
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle"></i> <strong>Warning:</strong> These techniques are for educational purposes only. Use only in environments where you have proper authorization.
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Misconfiguration</th>
+                                                    <th>Description</th>
+                                                    <th>Detection Method</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="azure-privesc-table">
+                                                <!-- Azure privilege escalation techniques will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="azure-cli" role="tabpanel" aria-labelledby="azure-cli-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Command</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="azure-cli-table">
+                                                <!-- Azure CLI commands will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- GCP Security Section -->
+                <section id="gcp-security" class="mb-5">
+                    <div class="card">
+                        <div class="card-header bg-danger text-white">
+                            <h2><i class="fab fa-google"></i> GCP Security</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Google Cloud Platform security testing resources, tools, and CLI commands.</p>
+                            
+                            <!-- GCP Security Categories Tabs -->
+                            <ul class="nav nav-tabs mb-3" id="gcpTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="gcp-tools-tab" data-bs-toggle="tab" data-bs-target="#gcp-tools" type="button" role="tab" aria-controls="gcp-tools" aria-selected="true">Tools</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="gcp-privesc-tab" data-bs-toggle="tab" data-bs-target="#gcp-privesc" type="button" role="tab" aria-controls="gcp-privesc" aria-selected="false">Privilege Escalation</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="gcp-cli-tab" data-bs-toggle="tab" data-bs-target="#gcp-cli" type="button" role="tab" aria-controls="gcp-cli" aria-selected="false">CLI Commands</button>
+                                </li>
+                            </ul>
+                            
+                            <!-- GCP Tab Content -->
+                            <div class="tab-content" id="gcpTabContent">
+                                <div class="tab-pane fade show active" id="gcp-tools" role="tabpanel" aria-labelledby="gcp-tools-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tool</th>
+                                                    <th>Description</th>
+                                                    <th>Link</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>GCP Scanner</td>
+                                                    <td>Scanner for GCP resources</td>
+                                                    <td><a href="https://github.com/google/gcp_scanner" target="_blank" class="btn btn-sm btn-primary"><i class="fas fa-external-link-alt"></i> GitHub</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>GCPBucketBrute</td>
+                                                    <td>GCP storage bucket enumeration</td>
+                                                    <td><a href="https://github.com/RhinoSecurityLabs/GCPBucketBrute" target="_blank" class="btn btn-sm btn-primary"><i class="fas fa-external-link-alt"></i> GitHub</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>ScoutSuite</td>
+                                                    <td>Multi-cloud security auditing tool</td>
+                                                    <td><a href="https://github.com/nccgroup/ScoutSuite" target="_blank" class="btn btn-sm btn-primary"><i class="fas fa-external-link-alt"></i> GitHub</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Forseti Security</td>
+                                                    <td>GCP security monitoring tool</td>
+                                                    <td><a href="https://github.com/forseti-security/forseti-security" target="_blank" class="btn btn-sm btn-primary"><i class="fas fa-external-link-alt"></i> GitHub</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>GCP IAM Recommender</td>
+                                                    <td>Permissions management tool</td>
+                                                    <td><a href="https://cloud.google.com/iam/docs/recommender" target="_blank" class="btn btn-sm btn-primary"><i class="fas fa-external-link-alt"></i> Docs</a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="gcp-privesc" role="tabpanel" aria-labelledby="gcp-privesc-tab">
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle"></i> <strong>Warning:</strong> These techniques are for educational purposes only. Use only in environments where you have proper authorization.
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Misconfiguration</th>
+                                                    <th>Description</th>
+                                                    <th>Detection Method</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Service Account Roles</td>
+                                                    <td>Over-permissive service account roles</td>
+                                                    <td><code>gcloud projects get-iam-policy [project-id]</code></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Custom Roles</td>
+                                                    <td>Custom roles with excessive permissions</td>
+                                                    <td><code>gcloud iam roles list --project=[project-id]</code></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Service Account Keys</td>
+                                                    <td>Exposed service account keys</td>
+                                                    <td><code>gcloud iam service-accounts keys list --iam-account=[account]</code></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Compute Instance Metadata</td>
+                                                    <td>Access to compute instance metadata</td>
+                                                    <td><code>curl -H "Metadata-Flavor: Google" 'http://metadata.google.internal/computeMetadata/v1/instance/'</code></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Cloud Storage ACLs</td>
+                                                    <td>Permissive bucket ACLs</td>
+                                                    <td><code>gsutil iam get gs://[bucket-name]</code></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="gcp-cli" role="tabpanel" aria-labelledby="gcp-cli-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Command</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="gcp-cli-table">
+                                                <!-- GCP CLI commands will be loaded here by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
             </div>
         </div>
@@ -760,8 +1077,10 @@
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     <!-- Custom JavaScript -->
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>
+    
 </body>
 </html>
