@@ -100,12 +100,9 @@ function initializePage() {
     populateTable('sql-table', sqlInjectionData, createPayloadRow);
     populateTable('csv-table', csvInjectionData, createPayloadRow);
     populateTable('regex-table', regexData, createRegexRow);
-    populateTable('resources-table', resourcesData, createResourceRow);
-    
-    // Populate Windows and Linux Privilege Escalation tables
-    populateTable('windows-privesc-table', windowsPrivescData, createPayloadRow);
+    populateTable('resources-table', resourcesData, createResourceRow);    // Populate Windows and Linux Privilege Escalation tables    populateTable('windows-privesc-table', windowsPrivescData, item => createPayloadRow(item, false));
     populateTable('windows-privesc-resources-table', windowsPrivescResourcesData, createResourceRow);
-    populateTable('linux-privesc-table', linuxPrivescData, createPayloadRow);
+    populateTable('linux-privesc-table', linuxPrivescData, item => createPayloadRow(item, false));
     populateTable('linux-privesc-resources-table', linuxPrivescResourcesData, createResourceRow);
     
     // Populate Cloud Security tables
@@ -114,14 +111,13 @@ function initializePage() {
     
     // Azure - populate all Azure tables
     populateTable('azure-tools-table', cloudSecurityData.azure.tools, createResourceRow);
-    populateTable('azure-privesc-table', cloudSecurityData.azure.privEscTechniques, createCloudPrivEscRow);
-    populateTable('azure-cli-table', azureSecurityCliData, createCloudCliRow);
-    
-    // GCP
+    populateTable('azure-privesc-table', cloudSecurityData.azure.privEscTechniques, createCloudPrivEscRow);    populateTable('azure-cli-table', azureSecurityCliData, createCloudCliRow);
+      // GCP
     populateTable('gcp-cli-table', gcpSecurityCliData, createCloudCliRow);
-    
-    // Populate OSINT resources table
+      // Populate OSINT resources table
     populateTable('osint-table', osintResourcesData, createResourceRow);
+      // Populate bookmark tools table
+    populateTable('bookmark-tools-table', bookmarkToolsData, createBookmarkToolRow);
     
     // Create the notification element for copy operations
     createCopyNotification();
@@ -304,7 +300,7 @@ function createWordlistRow(wordlist) {
 }
 
 // Create a row for a payload item
-function createPayloadRow(payload) {
+function createPayloadRow(payload, includeEncode = true) {
     const row = document.createElement('tr');
     
     // Payload cell
@@ -342,120 +338,127 @@ function createPayloadRow(payload) {
         }, 2000);
     });
     
-    // Encode dropdown button
-    const encodeButton = document.createElement('button');
-    encodeButton.className = 'btn btn-sm btn-primary dropdown-toggle';
-    encodeButton.innerHTML = '<i class="fas fa-code"></i> Encode';
-    encodeButton.setAttribute('type', 'button');
-    encodeButton.setAttribute('data-bs-toggle', 'dropdown');
-    encodeButton.setAttribute('aria-expanded', 'false');
+    // Add copy button to the button group
+    buttonGroup.appendChild(copyButton);
     
-    // Dropdown menu
-    const dropdownMenu = document.createElement('ul');
-    dropdownMenu.className = 'dropdown-menu';
-    
-    // Add dropdown items for encoding options
-    const encodingOptions = [
-        { value: 'html', name: 'HTML Entity' },
-        { value: 'url', name: 'URL Encode' },
-        { value: 'base64', name: 'Base64 Encode' },
-        { value: 'hex', name: 'Hex Encode' },
-        { value: 'js_escape', name: 'JS Escape' }
-    ];
-    
-    encodingOptions.forEach(option => {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.className = 'dropdown-item';
-        a.href = '#';
-        a.textContent = option.name;
-        a.addEventListener('click', function(e) {
+    // Only include encode functionality if includeEncode is true
+    if (includeEncode) {
+        // Encode dropdown button
+        const encodeButton = document.createElement('button');
+        encodeButton.className = 'btn btn-sm btn-primary dropdown-toggle';
+        encodeButton.innerHTML = '<i class="fas fa-code"></i> Encode';
+        encodeButton.setAttribute('type', 'button');
+        encodeButton.setAttribute('data-bs-toggle', 'dropdown');
+        encodeButton.setAttribute('aria-expanded', 'false');
+        
+        // Dropdown menu
+        const dropdownMenu = document.createElement('ul');
+        dropdownMenu.className = 'dropdown-menu';
+        
+        // Add dropdown items for encoding options
+        const encodingOptions = [
+            { value: 'html', name: 'HTML Entity' },
+            { value: 'url', name: 'URL Encode' },
+            { value: 'base64', name: 'Base64 Encode' },
+            { value: 'hex', name: 'Hex Encode' },
+            { value: 'js_escape', name: 'JS Escape' }
+        ];
+        
+        encodingOptions.forEach(option => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.className = 'dropdown-item';
+            a.href = '#';
+            a.textContent = option.name;
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Switch to encoder tab
+                const encoderTab = document.getElementById('encoder-tab');
+                if (encoderTab) {
+                    // Show the XSS tab first if we're in a different section
+                    const xssTab = document.querySelector('a[href="#xss"]');
+                    if (xssTab) {
+                        xssTab.click();
+                    }
+                    
+                    // Now show the encoder tab within XSS
+                    const triggerEl = new bootstrap.Tab(encoderTab);
+                    triggerEl.show();
+                    
+                    // Set payload in encoder textarea
+                    const payloadInput = document.getElementById('payload-to-encode');
+                    if (payloadInput) {
+                        payloadInput.value = payload.payload;
+                        
+                        // Set encoding method
+                        const encodingSelect = document.getElementById('encoding-method-select');
+                        if (encodingSelect) {
+                            encodingSelect.value = option.value;
+                        }
+                        
+                        // Trigger encoding
+                        const encodeButton = document.getElementById('encode-payload-btn');
+                        if (encodeButton) {
+                            encodeButton.click();
+                        }
+                        
+                        // Scroll to encoder section
+                        const encoderSection = document.querySelector('#encoder');
+                        if (encoderSection) {
+                            encoderSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                }
+            });
+            
+            li.appendChild(a);
+            dropdownMenu.appendChild(li);
+        });
+        
+        // Add "All Encodings" option
+        const allLi = document.createElement('li');
+        const allA = document.createElement('a');
+        allA.className = 'dropdown-item';
+        allA.href = '#';
+        allA.textContent = 'All Encodings';
+        allA.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Switch to encoder tab
+            // Same logic as above but with 'all' encoding option
             const encoderTab = document.getElementById('encoder-tab');
             if (encoderTab) {
-                // Show the XSS tab first if we're in a different section
                 const xssTab = document.querySelector('a[href="#xss"]');
-                if (xssTab) {
-                    xssTab.click();
-                }
+                if (xssTab) xssTab.click();
                 
-                // Now show the encoder tab within XSS
                 const triggerEl = new bootstrap.Tab(encoderTab);
                 triggerEl.show();
                 
-                // Set payload in encoder textarea
                 const payloadInput = document.getElementById('payload-to-encode');
                 if (payloadInput) {
                     payloadInput.value = payload.payload;
                     
-                    // Set encoding method
                     const encodingSelect = document.getElementById('encoding-method-select');
-                    if (encodingSelect) {
-                        encodingSelect.value = option.value;
-                    }
+                    if (encodingSelect) encodingSelect.value = 'all';
                     
-                    // Trigger encoding
                     const encodeButton = document.getElementById('encode-payload-btn');
-                    if (encodeButton) {
-                        encodeButton.click();
-                    }
+                    if (encodeButton) encodeButton.click();
                     
-                    // Scroll to encoder section
                     const encoderSection = document.querySelector('#encoder');
-                    if (encoderSection) {
-                        encoderSection.scrollIntoView({ behavior: 'smooth' });
-                    }
+                    if (encoderSection) encoderSection.scrollIntoView({ behavior: 'smooth' });
                 }
             }
         });
         
-        li.appendChild(a);
-        dropdownMenu.appendChild(li);
-    });
-    
-    // Add "All Encodings" option
-    const allLi = document.createElement('li');
-    const allA = document.createElement('a');
-    allA.className = 'dropdown-item';
-    allA.href = '#';
-    allA.textContent = 'All Encodings';
-    allA.addEventListener('click', function(e) {
-        e.preventDefault();
+        allLi.appendChild(allA);
+        dropdownMenu.appendChild(allLi);
         
-        // Same logic as above but with 'all' encoding option
-        const encoderTab = document.getElementById('encoder-tab');
-        if (encoderTab) {
-            const xssTab = document.querySelector('a[href="#xss"]');
-            if (xssTab) xssTab.click();
-            
-            const triggerEl = new bootstrap.Tab(encoderTab);
-            triggerEl.show();
-            
-            const payloadInput = document.getElementById('payload-to-encode');
-            if (payloadInput) {
-                payloadInput.value = payload.payload;
-                
-                const encodingSelect = document.getElementById('encoding-method-select');
-                if (encodingSelect) encodingSelect.value = 'all';
-                
-                const encodeButton = document.getElementById('encode-payload-btn');
-                if (encodeButton) encodeButton.click();
-                
-                const encoderSection = document.querySelector('#encoder');
-                if (encoderSection) encoderSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-    });
+        // Add the encode button and dropdown to the button group
+        buttonGroup.appendChild(encodeButton);
+        buttonGroup.appendChild(dropdownMenu);
+    }
     
-    allLi.appendChild(allA);
-    dropdownMenu.appendChild(allLi);
-    
-    // Assemble button group
-    buttonGroup.appendChild(copyButton);
-    buttonGroup.appendChild(encodeButton);
-    buttonGroup.appendChild(dropdownMenu);
+    // Add the button group to the action cell
     actionCell.appendChild(buttonGroup);
     row.appendChild(actionCell);
     
@@ -572,6 +575,95 @@ function createResourceRow(resource) {
     return row;
 }
 
+// Create a row for a bookmark tool item
+function createBookmarkToolRow(resource) {
+    const row = document.createElement('tr');
+    
+    // Code cell - Show the JavaScript bookmarklet code
+    const codeCell = document.createElement('td');    const codeBlock = document.createElement('div');
+    codeBlock.className = 'code-container position-relative';
+    
+    // Add a small JavaScript label to indicate the language
+    const jsLabel = document.createElement('div');
+    jsLabel.className = 'code-label';
+    jsLabel.textContent = 'JavaScript';
+    codeBlock.appendChild(jsLabel);
+    
+    // Create pre and code elements for code formatting
+    const pre = document.createElement('pre');
+    pre.className = 'mb-0';
+    pre.style.maxHeight = '100px';
+    pre.style.overflowY = 'auto';
+    
+    const codeElement = document.createElement('code');
+    codeElement.className = 'payload-text';
+      // Format the code to make it more readable
+    let jsCode = resource.code.replace('javascript:', '');
+    let formattedCode = jsCode;
+    
+    if (typeof BookmarkTools !== 'undefined' && BookmarkTools.formatCode) {
+        formattedCode = BookmarkTools.formatCode(resource.code);
+    } else {
+        formattedCode = jsCode
+            .replace(/^\(function\(\)\{/, '(function() {\n  ')
+            .replace(/\}\)\(\);$/, '\n})();')
+            .replace(/;/g, ';\n  ')
+            .replace(/\}\);/g, '});\n  ')
+            .replace(/\n  \n/, '\n')
+            .replace(/document\.querySelectorAll/g, '\ndocument.querySelectorAll');
+    }
+      codeElement.textContent = formattedCode;
+    pre.appendChild(codeElement);
+    codeBlock.appendChild(pre);
+    codeCell.appendChild(codeBlock);
+    row.appendChild(codeCell);
+    
+    // Description cell
+    const descCell = document.createElement('td');
+    descCell.textContent = resource.description;
+    row.appendChild(descCell);
+    
+    // Action cell (copy button and bookmark button)
+    const actionCell = document.createElement('td');
+    
+    // Copy button
+    const copyButton = document.createElement('button');
+    copyButton.className = 'btn btn-sm btn-success btn-copy me-2';
+    copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
+    copyButton.addEventListener('click', function() {
+        // Use the helper function to copy code to clipboard
+        if (typeof BookmarkTools !== 'undefined' && BookmarkTools.copyText) {
+            BookmarkTools.copyText(
+                jsCode,
+                function() { showCopyNotification('Bookmarklet copied to clipboard!'); }, 
+                function(err) { showCopyNotification('Failed to copy: ' + err); }
+            );
+        } else {
+            copyToClipboard(jsCode);
+            showCopyNotification('Bookmarklet copied to clipboard!');
+        }
+        
+        // Visual feedback
+        this.innerHTML = '<i class="fas fa-check"></i> Copied';
+        setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-copy"></i> Copy';
+        }, 2000);
+    });    actionCell.appendChild(copyButton);
+    
+    // Bookmarklet button (drag to bookmarks)
+    const bookmarkletBtn = document.createElement('a');
+    bookmarkletBtn.href = resource.code;
+    bookmarkletBtn.className = 'btn btn-sm btn-primary';
+    bookmarkletBtn.innerHTML = '<i class="fas fa-bookmark"></i> Add to Bookmarks';
+    bookmarkletBtn.title = `Drag "${resource.name}" to your bookmarks bar`;
+    bookmarkletBtn.draggable = true;
+    actionCell.appendChild(bookmarkletBtn);
+    
+    row.appendChild(actionCell);
+    
+    return row;
+}
+
 // Create a row for cloud CLI command
 function createCloudCliRow(cli) {
     const row = document.createElement('tr');
@@ -630,6 +722,108 @@ function createCloudPrivEscRow(technique) {
     methodCode.textContent = technique.detectionMethod;
     methodCell.appendChild(methodCode);
     row.appendChild(methodCell);
+    
+    return row;
+}
+
+// Create a row for network port enumeration commands
+function createNetworkPortsEnumRow(data) {
+    const row = document.createElement('tr');
+    
+    // Command cell
+    const commandCell = document.createElement('td');
+    const commandText = document.createElement('code');
+    commandText.className = 'payload-text';
+    commandText.textContent = data.command;
+    commandCell.appendChild(commandText);
+    row.appendChild(commandCell);
+    
+    // Description cell
+    const descCell = document.createElement('td');
+    descCell.textContent = data.description;
+    row.appendChild(descCell);
+    
+    // Action cell
+    const actionCell = document.createElement('td');
+    const buttonGroup = document.createElement('div');
+    buttonGroup.className = 'btn-group';
+      // Copy button
+    const copyButton = document.createElement('button');
+    copyButton.className = 'btn btn-sm btn-success';
+    copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
+    copyButton.addEventListener('click', function() {
+        copyToClipboard(data.command);
+        showCopyNotification('Command copied to clipboard!');
+        
+        // Visual feedback
+        this.innerHTML = '<i class="fas fa-check"></i> Copied';
+        setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-copy"></i> Copy';
+        }, 2000);
+    });
+    
+    buttonGroup.appendChild(copyButton);
+    actionCell.appendChild(buttonGroup);
+    row.appendChild(actionCell);
+    
+    return row;
+}
+
+// Create a row for ports exploits
+function createPortsExploitsRow(data) {
+    const row = document.createElement('tr');
+    
+    // Port/Service cell
+    const portCell = document.createElement('td');
+    portCell.textContent = data.port;
+    row.appendChild(portCell);
+    
+    // Exploit cell
+    const exploitCell = document.createElement('td');
+    exploitCell.textContent = data.exploit;
+    row.appendChild(exploitCell);
+    
+    // Technique cell
+    const techniqueCell = document.createElement('td');
+    const techniqueText = document.createElement('code');
+    techniqueText.className = 'payload-text';
+    techniqueText.textContent = data.technique;
+    techniqueCell.appendChild(techniqueText);
+    
+    // Add copy button for technique
+    const copyButton = document.createElement('button');
+    copyButton.className = 'btn btn-sm btn-primary mt-2';
+    copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
+    copyButton.addEventListener('click', function() {
+        copyToClipboard(data.technique);
+        showCopyNotification('Technique copied to clipboard!');
+    });
+    
+    techniqueCell.appendChild(document.createElement('br'));
+    techniqueCell.appendChild(copyButton);
+    row.appendChild(techniqueCell);
+    
+    return row;
+}
+
+// Create a row for common ports reference
+function createCommonPortsReferenceRow(data) {
+    const row = document.createElement('tr');
+    
+    // Port cell
+    const portCell = document.createElement('td');
+    portCell.textContent = data.port;
+    row.appendChild(portCell);
+    
+    // Service cell
+    const serviceCell = document.createElement('td');
+    serviceCell.textContent = data.service;
+    row.appendChild(serviceCell);
+    
+    // Description cell
+    const descCell = document.createElement('td');
+    descCell.textContent = data.description;
+    row.appendChild(descCell);
     
     return row;
 }
