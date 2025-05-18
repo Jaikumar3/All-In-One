@@ -24,6 +24,10 @@
     scroll-behavior: smooth;
     overscroll-behavior-y: contain;
     -webkit-overflow-scrolling: touch;
+    
+    /* Code container variables */
+    --code-container-bg: #f5f5f5;
+    --code-container-border: #dee2e6;
 }
 
 [data-bs-theme="dark"] {
@@ -890,6 +894,19 @@ pre.code-block {
         width: 25%;
     }
     
+    /* Bookmark tools table on mobile */
+    .bookmark-tools-table th:nth-child(1), .bookmark-tools-table td:nth-child(1) {
+        width: 45%; /* Code column still gets more space */
+    }
+    
+    .bookmark-tools-table th:nth-child(2), .bookmark-tools-table td:nth-child(2) {
+        width: 35%; /* Description */
+    }
+    
+    .bookmark-tools-table th:nth-child(3), .bookmark-tools-table td:nth-child(3) {
+        width: 20%; /* Action gets more space for touch targets */
+    }
+    
     /* Adjusted copy button for small screens */
     .btn-copy {
         padding: 6px;
@@ -993,6 +1010,88 @@ pre.code-block {
     display: block;
     overflow-x: auto;
     word-wrap: break-word;
+}
+
+/* Bookmark Tools code container styles */
+.code-container {
+    background-color: var(--code-container-bg);
+    border: 1px solid var(--code-container-border);
+    border-radius: 0.25rem;
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+/* Language label for code blocks */
+.code-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 0.7rem;
+    padding: 2px 5px;
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 3px 0 3px 0;
+    opacity: 0.8;
+    z-index: 1;
+}
+
+[data-bs-theme="dark"] .code-label {
+    background-color: #0d6efd;
+}
+
+.code-container pre {
+    padding: 1.5rem 1rem 1rem;
+    margin-bottom: 0;
+    font-size: 0.85rem;
+    border-radius: 0.25rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 150px; /* Limit the height of code blocks */
+    overflow-y: auto; /* Add scrolling for tall code blocks */
+}
+
+.code-container code {
+    color: var(--code-color);
+    font-size: 0.85rem;
+}
+
+.code-container .btn-copy {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 1;
+    opacity: 0.7;
+}
+
+.code-container .btn-copy:hover {
+    opacity: 1;
+}
+
+[data-bs-theme="dark"] .code-container {
+    background-color: #2a2d31;
+    border-color: #444;
+}
+
+[data-bs-theme="dark"] .code-container code {
+    color: #e9e9e9;
+}
+
+/* Bookmark Tools table specific styles */
+.bookmark-tools-table th:nth-child(1), .bookmark-tools-table td:nth-child(1) {
+    width: 50%; /* Code column gets more space */
+}
+
+.bookmark-tools-table th:nth-child(2), .bookmark-tools-table td:nth-child(2) {
+    width: 35%; /* Description gets less */
+}
+
+.bookmark-tools-table th:nth-child(3), .bookmark-tools-table td:nth-child(3) {
+    width: 15%; /* Action stays the same */
+}
+
+.bookmarklet-btn {
+    cursor: move;
+    user-select: none;
 }
 
 /* Style for encoder tab */
