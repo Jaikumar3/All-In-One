@@ -1094,6 +1094,37 @@ pre.code-block {
     user-select: none;
 }
 
+/* Draggable bookmark button styling */
+.draggable-bookmark {
+    cursor: grab;
+    position: relative;
+    padding-left: 30px !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.draggable-bookmark:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.draggable-bookmark:active {
+    cursor: grabbing;
+}
+
+.draggable-bookmark::before {
+    content: "↖";
+    position: absolute;
+    left: 8px;
+    top: 6px;
+    font-size: 12px;
+    animation: dragHint 2s infinite;
+}
+
+@keyframes dragHint {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-3px, -3px); }
+}
+
 /* Style for encoder tab */
 #encoder .card {
     border: none;
