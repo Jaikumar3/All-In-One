@@ -16,8 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize favorite payloads
     initializeFavorites();
-    
-    // Initialize tab scrolling system
+      // Initialize tab scrolling system
     initializeTabScrolling();
 
     // Set up cloud CLI command copy buttons
@@ -25,6 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize encoder functionality
     setupEncoderFunctionality();
+    
+    // Set up drag indicators for bookmarklets
+    setupDraggableBookmarklets();
     
     // Display version information
     displayVersionInfo();
@@ -649,12 +651,11 @@ function createBookmarkToolRow(resource) {
             this.innerHTML = '<i class="fas fa-copy"></i> Copy';
         }, 2000);
     });    actionCell.appendChild(copyButton);
-    
-    // Bookmarklet button (drag to bookmarks)
+      // Bookmarklet button (drag to bookmarks)
     const bookmarkletBtn = document.createElement('a');
     bookmarkletBtn.href = resource.code;
-    bookmarkletBtn.className = 'btn btn-sm btn-primary';
-    bookmarkletBtn.innerHTML = '<i class="fas fa-bookmark"></i> Add to Bookmarks';
+    bookmarkletBtn.className = 'btn btn-sm btn-primary draggable-bookmark';
+    bookmarkletBtn.innerHTML = '<i class="fas fa-arrows-alt"></i> Drag to Bookmarks Bar';
     bookmarkletBtn.title = `Drag "${resource.name}" to your bookmarks bar`;
     bookmarkletBtn.draggable = true;
     actionCell.appendChild(bookmarkletBtn);
@@ -1351,4 +1352,38 @@ function jsEscape(str) {
 // JavaScript String Format
 function jsString(str) {
     return "'" + jsEscape(str) + "'";
+}
+
+// Setup draggable behavior for bookmarklet buttons
+function setupDraggableBookmarklets() {
+    // Wait for buttons to be created
+    setTimeout(() => {
+        const draggableButtons = document.querySelectorAll('.draggable-bookmark');
+        
+        draggableButtons.forEach(button => {
+            // Add dragstart event to provide visual feedback
+            button.addEventListener('dragstart', function(e) {
+                // Add dragging class for visual feedback
+                this.classList.add('dragging');
+                
+                // Set data for drag operation
+                e.dataTransfer.setData('text/plain', this.href);
+                e.dataTransfer.effectAllowed = 'copy';
+                
+                // Show notification to help user
+                showNotification('Drag this to your bookmarks bar ↑', 'info');
+            });
+            
+            // Add dragend event to remove visual feedback
+            button.addEventListener('dragend', function() {
+                this.classList.remove('dragging');
+            });
+            
+            // Prevent normal click behavior
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                showNotification('Please drag this to your bookmarks bar instead of clicking it', 'warning');
+            });
+        });
+    }, 1000); // Wait for DOM to be fully ready
 }
